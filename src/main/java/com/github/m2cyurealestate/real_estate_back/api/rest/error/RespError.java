@@ -23,22 +23,22 @@ public record RespError(
         Collection<String> errors
 ) {
 
-    public RespError(WebRequest request, HttpStatus status, Exception exception) {
+    public RespError(WebRequest request, HttpStatus status, Throwable throwable) {
         this(findPath(request),
              LocalDateTime.now(),
              status.value(),
              status.name(),
-             exception.getMessage(),
+             throwable.getMessage(),
              List.of()
         );
     }
 
-    public RespError(WebRequest request, HttpStatus status, Exception exception, Collection<String> errors) {
+    public RespError(WebRequest request, HttpStatus status, Throwable throwable, Collection<String> errors) {
         this(findPath(request),
              LocalDateTime.now(),
              status.value(),
              status.name(),
-             exception.getMessage(),
+             throwable.getMessage(),
              errors
         );
     }
