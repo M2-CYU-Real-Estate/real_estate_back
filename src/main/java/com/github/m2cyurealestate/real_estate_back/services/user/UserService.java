@@ -3,8 +3,7 @@ package com.github.m2cyurealestate.real_estate_back.services.user;
 import com.github.m2cyurealestate.real_estate_back.api.rest.auth.ReqRegister;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.business.user.UserRole;
-import com.github.m2cyurealestate.real_estate_back.dao.user.UserRepository;
-import com.github.m2cyurealestate.real_estate_back.security.jwt.AuthenticationHandler;
+import com.github.m2cyurealestate.real_estate_back.dao.user.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +21,19 @@ public class UserService implements UserDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
+    private final UserDao userDao;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository,
+    public UserService(UserDao userRepository,
                        PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+        this.userDao = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public void onLogin(User user) {
-        user.onLogin();
-        userRepository.save(user);
+        userDao.updateLastLoginDate(user.getId());
     }
 
     public User register(ReqRegister request) {
@@ -43,11 +41,11 @@ public class UserService implements UserDetailsService {
         validateCanRegister(email);
 
         User user = new User(request.username(), request.email(), passwordEncoder.encode(request.password()));
-        return userRepository.save(user);
+        return userDao.save(user);
     }
 
     public User getUserById(long id) {
-        return userRepository.findById(id)
+        return userDao.findById(id)
                 .orElseThrow();
     }
 
@@ -55,23 +53,23 @@ public class UserService implements UserDetailsService {
      * Register a default admin, providing the already-encrypted password
      */
     public void registerDefaultAdminIfNotFound(String username, String email, String encryptedPassword) {
-        if (userRepository.existsByEmail(email)) {
+        if (userDao.existsByEmail(email)) {
             LOGGER.info("Default admin already exists");
             return;
         }
         LOGGER.info("Create default admin");
-        userRepository.save(new User(username, email, encryptedPassword, UserRole.ADMIN));
+        userDao.save(new User(username, email, encryptedPassword, UserRole.ADMIN));
     }
 
     private void validateCanRegister(String email) {
-        if (userRepository.existsByEmail(email)) {
+        if (userDao.existsByEmail(email)) {
             throw new IllegalArgumentException("Another user with this email address already exists");
         }
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
+        return userDao.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Cannot find user by email"));
     }
 

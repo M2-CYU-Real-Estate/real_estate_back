@@ -4,20 +4,19 @@ import com.github.m2cyurealestate.real_estate_back.services.user.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(scanBasePackages = {
         "com.github.m2cyurealestate.real_estate_back.api",
         "com.github.m2cyurealestate.real_estate_back.config",
         "com.github.m2cyurealestate.real_estate_back.security",
-        "com.github.m2cyurealestate.real_estate_back.services"
+        "com.github.m2cyurealestate.real_estate_back.services",
+        "com.github.m2cyurealestate.real_estate_back.persistence"
 })
-@EntityScan(basePackages = "com.github.m2cyurealestate.real_estate_back.business")
 @ConfigurationPropertiesScan("com.github.m2cyurealestate.real_estate_back.config.properties")
-@EnableJpaRepositories("com.github.m2cyurealestate.real_estate_back.dao")
+@EnableTransactionManagement
 public class RealEstateBackApplication {
 
     public static void main(String[] args) {
