@@ -16,16 +16,14 @@ jwt.key.signatureAlgorithm=RS512
 corsFilterAllowOrigin=*
 
 # ==== DATABASE ====
+spring.datasource.driver-class-name=org.postgresql.Driver
 spring.datasource.url=jdbc:postgresql://[host]:5432/[table_name]
 spring.datasource.username=[username]
 spring.datasource.password=[password]
-# DEBUG
-spring.jpa.show-sql = false
+# Set the logging for showing the sql queries (comment for removing entirely)
+# logging.level.org.jooq.tools.LoggerListener=DEBUG
 
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.database=POSTGRESQL
-#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
+# Check sanity of the database on startup
 spring.datasource.hikari.connectionTimeout=7200000
 spring.datasource.hikari.idleTimeout=7200000
 spring.datasource.hikari.maxLifetime=7200000

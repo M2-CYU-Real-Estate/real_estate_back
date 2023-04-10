@@ -1,6 +1,5 @@
 package com.github.m2cyurealestate.real_estate_back.business.user;
 
-import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,32 +14,21 @@ import java.util.Objects;
  *
  * @author Aldric Vitali Silvestre
  */
-@Entity
-// Rename the default table name, or else it will crash (user keyword already exists)
-@Table(name = "user_entity")
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
 
-    @Column(nullable = false)
     private LocalDateTime creationDate = LocalDateTime.now();
 
-    private LocalDateTime lastLoginDate;
+    private LocalDateTime lastLoginDate = LocalDateTime.now();
 
     private LocalDateTime lastPasswordResetDate = LocalDateTime.now();
 
@@ -65,7 +53,24 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    // ==== NON-TRIVIAL METHODS ====
+    public User(Long id,
+                String name,
+                String email,
+                String password,
+                UserRole role,
+                LocalDateTime creationDate,
+                LocalDateTime lastLoginDate,
+                LocalDateTime lastPasswordResetDate) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.creationDate = creationDate;
+        this.lastLoginDate = lastLoginDate;
+        this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+// ==== NON-TRIVIAL METHODS ====
 
     public void onLogin() {
         lastLoginDate = LocalDateTime.now();
