@@ -48,7 +48,7 @@ public class RespPage<T> {
                 .toList();
         this.pageCount = page.getTotalPages();
         this.pageNumber = page.getNumber();
-        this.size = page.getSize();
+        this.size = page.getContent().size();
         this.totalCount = page.getTotalElements();
     }
 
