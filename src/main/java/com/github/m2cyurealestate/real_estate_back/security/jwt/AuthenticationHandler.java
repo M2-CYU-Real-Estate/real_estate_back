@@ -71,4 +71,19 @@ public class AuthenticationHandler {
         }
         throw new NoSuchElementException("Authenticated user cannot be properly retrieved");
     }
+
+    /**
+     * Find the user from the security context.
+     * <p>
+     * If cannot be found, this returns an empty {@link Optional} instead.
+     *
+     * @return The authenticated user, or an empty optional if not found.
+     */
+    public Optional<User> findUserFromContext() {
+        try {
+            return Optional.of(getUserFromContext());
+        } catch (ProviderNotFoundException | NoSuchElementException e) {
+            return Optional.empty();
+        }
+    }
 }
