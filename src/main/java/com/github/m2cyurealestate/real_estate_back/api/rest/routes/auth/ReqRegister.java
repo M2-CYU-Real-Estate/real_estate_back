@@ -1,4 +1,4 @@
-package com.github.m2cyurealestate.real_estate_back.api.rest.auth;
+package com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth;
 
 /**
  * @author Aldric Vitali Silvestre

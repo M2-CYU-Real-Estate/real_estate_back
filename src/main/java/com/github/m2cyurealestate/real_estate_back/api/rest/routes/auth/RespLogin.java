@@ -1,6 +1,6 @@
-package com.github.m2cyurealestate.real_estate_back.api.rest.auth;
+package com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth;
 
-import com.github.m2cyurealestate.real_estate_back.api.rest.user.RespUser;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.user.RespUser;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 
 import java.time.LocalDateTime;

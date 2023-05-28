@@ -1,4 +1,4 @@
-package com.github.m2cyurealestate.real_estate_back.api.rest.health;
+package com.github.m2cyurealestate.real_estate_back.api.rest.routes.health;
 
 import com.github.m2cyurealestate.real_estate_back.config.properties.ServerProperties;
 import org.springframework.beans.factory.annotation.Autowired;

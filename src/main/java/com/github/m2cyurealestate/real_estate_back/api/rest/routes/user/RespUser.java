@@ -1,4 +1,4 @@
-package com.github.m2cyurealestate.real_estate_back.api.rest.user;
+package com.github.m2cyurealestate.real_estate_back.api.rest.routes.user;
 
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.business.user.UserRole;

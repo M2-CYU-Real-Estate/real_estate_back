@@ -1,4 +1,4 @@
-package com.github.m2cyurealestate.real_estate_back.api.rest.auth;
+package com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth;
 
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.security.jwt.AuthenticationHandler;
@@ -49,7 +49,7 @@ public class AuthenticationController {
 
     @PostMapping("register")
     public ResponseEntity<RespRegister> register(@RequestBody ReqRegister request) throws Exception {
-        LOGGER.debug("Log in request");
+        LOGGER.debug("REQUEST - register");
         User user = userService.register(request);
         return ResponseEntity.ok(new RespRegister(user));
     }

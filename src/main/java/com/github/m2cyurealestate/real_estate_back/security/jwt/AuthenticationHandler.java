@@ -1,6 +1,6 @@
 package com.github.m2cyurealestate.real_estate_back.security.jwt;
 
-import com.github.m2cyurealestate.real_estate_back.api.rest.auth.ReqLogin;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqLogin;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.github.m2cyurealestate.real_estate_back.api.rest.health;
+package com.github.m2cyurealestate.real_estate_back.api.rest.routes.health;
 
 import java.time.LocalDateTime;
 
