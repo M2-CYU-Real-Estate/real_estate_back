@@ -9,6 +9,8 @@ public class Estate {
 
     private long id;
 
+    private boolean isFavorite;
+
     private String title;
 
     private String description;
@@ -68,6 +70,7 @@ public class Estate {
     }
 
     public Estate(long id,
+                  boolean isFavorite,
                   String title,
                   String description,
                   String url,
@@ -93,6 +96,7 @@ public class Estate {
                   LocalDateTime createdAt,
                   LocalDateTime lastUpdatedAt) {
         this.id = id;
+        this.isFavorite = isFavorite;
         this.title = title;
         this.description = description;
         this.url = url;
@@ -125,6 +129,14 @@ public class Estate {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     public String getTitle() {
