@@ -3,7 +3,6 @@ package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstateType;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
 
@@ -32,12 +31,12 @@ public class JooqEstateMappers {
                 stringToEstateType(record.getTypeEstate()),
                 record.getCityName(),
                 record.getPostalCode(),
-                record.getPrice().longValue(),
-                extractSurface(record.getSurface()).longValue(),
+                record.getPrice(),
+                extractSurface(record.getSurface()),
                 record.getTerrainSurface().longValue(),
-                record.getRoomNumber().intValue(),
-                record.getBedroomNumber().intValue(),
-                record.getBathroomNumber().intValue(),
+                record.getRoomNumber(),
+                record.getBedroomNumber(),
+                record.getBathroomNumber(),
                 record.getIsterrace(),
                 record.getIsbalcony(),
                 record.getIselevator(),
@@ -60,12 +59,12 @@ public class JooqEstateMappers {
     }
 
     // NOTE : This is a temporary method that should be deleted soon
-    private BigDecimal extractSurface(String surface) {
+    private Long extractSurface(String surface) {
         // Convert to big decimal to have the same logic as the other columns
         try {
-            return new BigDecimal(surface);
+            return Long.parseLong(surface);
         } catch (NumberFormatException exception) {
-            return BigDecimal.ZERO;
+            return -1L;
         }
     }
 }

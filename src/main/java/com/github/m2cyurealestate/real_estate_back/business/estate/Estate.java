@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
  */
 public class Estate {
 
-    private long id;
+    // TODO : replace with optionals
+    private Long id;
 
     private boolean isFavorite;
 
@@ -123,11 +124,11 @@ public class Estate {
         this.lastUpdatedAt = lastUpdatedAt;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
