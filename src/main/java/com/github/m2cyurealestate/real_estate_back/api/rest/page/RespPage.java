@@ -35,10 +35,11 @@ public class RespPage<T> {
     private final List<T> content;
 
     /**
-     * Create the page by mapping the page return using the mapping function
-     * @param page the page to convert
+     * Create the page by converting the page return using the mapping function
+     *
+     * @param page   the page to convert
      * @param mapper the function to apply to all elements to
-     * @param <U> The base type of the page
+     * @param <U>    The base type of the page
      */
     public <U> RespPage(Page<U> page, Function<U, T> mapper) {
         this.content = page.getContent()
@@ -49,6 +50,19 @@ public class RespPage<T> {
         this.pageNumber = page.getNumber();
         this.size = page.getSize();
         this.totalCount = page.getTotalElements();
+    }
+
+    /**
+     * Create the page by converting the page return using the mapping function.
+     * <p>
+     * This is an alternative version of {@link #RespPage(Page, Function)}.
+     *
+     * @param page   the page to convert
+     * @param mapper the function to apply to all elements to
+     * @param <U>    The base type of the page
+     */
+    public static <U, T> RespPage<T> of(Page<U> page, Function<U, T> mapper) {
+        return new RespPage<>(page, mapper);
     }
 
     public long getTotalCount() {
