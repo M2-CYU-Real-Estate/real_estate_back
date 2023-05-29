@@ -7,19 +7,21 @@ package com.github.m2cyurealestate.real_estate_back.business.estate;
  * @author Aldric Vitali Silvestre
  */
 public enum RateClass {
-    A(true),
-    B(true),
-    C(true),
-    D(true),
-    E(true),
-    F(true),
-    G(true),
-    NC(false);
+    A(true, 7),
+    B(true, 6),
+    C(true, 5),
+    D(true, 4),
+    E(true, 3),
+    F(true, 2),
+    G(true, 1),
+    NC(false, 0);
 
     private final boolean isSpecified;
+    private final int rating;
 
-    RateClass(boolean isSpecified) {
+    RateClass(boolean isSpecified, int rating) {
         this.isSpecified = isSpecified;
+        this.rating = rating;
     }
 
     /**
@@ -27,6 +29,10 @@ public enum RateClass {
      */
     public boolean isSpecified() {
         return isSpecified;
+    }
+
+    public int getRating() {
+        return rating;
     }
 
     /**

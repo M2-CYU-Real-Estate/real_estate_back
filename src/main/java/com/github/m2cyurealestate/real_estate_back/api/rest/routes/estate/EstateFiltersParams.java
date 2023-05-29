@@ -64,7 +64,7 @@ public class EstateFiltersParams {
     /**
      * Is elevator presence mandatory ?
      */
-    private Optional<Boolean> elevatorelevator = Optional.empty();
+    private Optional<Boolean> elevator = Optional.empty();
 
     /**
      * Minimal energy class suitable
@@ -76,6 +76,7 @@ public class EstateFiltersParams {
      */
     private Optional<RateClass> gzClass = Optional.empty();
 
+    // GETTERS / SETTERS
     public Optional<EstateType> getType() {
         return type;
     }
@@ -164,12 +165,12 @@ public class EstateFiltersParams {
         this.fKitchen = fKitchen;
     }
 
-    public Optional<Boolean> getElevatorelevator() {
-        return elevatorelevator;
+    public Optional<Boolean> getElevator() {
+        return elevator;
     }
 
-    public void setElevatorelevator(Optional<Boolean> elevatorelevator) {
-        this.elevatorelevator = elevatorelevator;
+    public void setElevator(Optional<Boolean> elevator) {
+        this.elevator = elevator;
     }
 
     public Optional<RateClass> getEnClass() {

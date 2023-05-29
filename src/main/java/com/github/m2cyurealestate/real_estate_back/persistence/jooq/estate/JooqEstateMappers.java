@@ -6,8 +6,6 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
 
-import java.math.BigDecimal;
-
 /**
  * @author Aldric Vitali Silvestre
  */
@@ -28,7 +26,7 @@ public class JooqEstateMappers {
                 record.getUrl(),
                 record.getImage(),
                 record.getRef(),
-                stringToEstateType(record.getTypeEstate()),
+                JooqEstateType.findEstateType(record.getTypeEstate()),
                 record.getCityName(),
                 record.getPostalCode(),
                 record.getPrice(),
@@ -48,14 +46,6 @@ public class JooqEstateMappers {
                 record.getDt(),
                 record.getDt()
         );
-    }
-
-    private EstateType stringToEstateType(String s) {
-        return switch(s) {
-            case "Maison" -> EstateType.HOUSE;
-            case "Appartement" -> EstateType.APARTMENT;
-            default -> EstateType.UNKNOWN;
-        };
     }
 
     // NOTE : This is a temporary method that should be deleted soon
