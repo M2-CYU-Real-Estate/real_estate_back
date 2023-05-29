@@ -2,14 +2,12 @@ package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
-import com.github.m2cyurealestate.real_estate_back.business.estate.EstateType;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
-import org.jooq.SelectQuery;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,12 +67,11 @@ public class JooqEstateDao implements EstateDao {
 
     @Override
     public Page<Estate> findPage(Pageable pageable, EstateFiltersParams filtersParams, Optional<User> user) {
-        // TODO not complete obviously
-        var select = dsl.selectFrom(ESTATE);
-        var query = select.getQuery();
-
         // For all filters present, add conditions
-        estateFilters.applyFilters(filtersParams, query);
+        var conditions = estateFilters.createFilters(filtersParams);
+
+        var select = dsl.selectFrom(ESTATE)
+                .where(conditions);
 
         // Perform another request to get total count
         int totalCount = dsl.fetchCount(select);
