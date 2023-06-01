@@ -15,6 +15,7 @@
     <description>Main server for the Real Estate Application</description>
     <properties>
         <finalName>${project.artifactId}-${project.version}</finalName>
+        <appPropertiesPath>src/main/resources/application.properties</appPropertiesPath>
         <java.version>17</java.version>
         <jjwt.version>0.11.5</jjwt.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
@@ -156,7 +157,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>src/main/resources/application.properties</file>
+                                <file>${appPropertiesPath}</file>
                             </files>
                         </configuration>
                     </execution>
