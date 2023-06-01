@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,8 +32,10 @@ public class EstateServiceImpl implements EstateService {
     }
 
     @Override
+    @Transactional
     public Estate getById(long id) {
         Optional<User> user = authenticationHandler.findUserFromContext();
+        // TODO: update user visits
         return estateDao.findById(id, user)
                 .orElseThrow();
     }

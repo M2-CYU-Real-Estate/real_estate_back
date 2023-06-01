@@ -1,7 +1,6 @@
 package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
-import com.github.m2cyurealestate.real_estate_back.business.estate.EstateType;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
@@ -30,7 +29,7 @@ public class JooqEstateMappers {
                 record.getCityName(),
                 record.getPostalCode(),
                 record.getPrice(),
-                extractSurface(record.getSurface()),
+                record.getSurface().longValue(),
                 record.getTerrainSurface().longValue(),
                 record.getRoomNumber(),
                 record.getBedroomNumber(),
@@ -46,15 +45,5 @@ public class JooqEstateMappers {
                 record.getDt(),
                 record.getDt()
         );
-    }
-
-    // NOTE : This is a temporary method that should be deleted soon
-    private Long extractSurface(String surface) {
-        // Convert to big decimal to have the same logic as the other columns
-        try {
-            return Long.parseLong(surface);
-        } catch (NumberFormatException exception) {
-            return -1L;
-        }
     }
 }
