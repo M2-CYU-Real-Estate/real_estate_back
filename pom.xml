@@ -14,6 +14,7 @@
     <name>real_estate_back</name>
     <description>Main server for the Real Estate Application</description>
     <properties>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <java.version>17</java.version>
         <jjwt.version>0.11.5</jjwt.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
@@ -123,6 +124,7 @@
     </dependencies>
 
     <build>
+        <finalName>${finalName}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -185,7 +187,7 @@
                                         org.jooq.meta.postgres.PostgresDatabase
                                     </name>
                                     <includes>.*</includes>
-                                    <excludes />
+                                    <excludes/>
                                     <inputSchema>public</inputSchema>
                                 </database>
                                 <generate>
