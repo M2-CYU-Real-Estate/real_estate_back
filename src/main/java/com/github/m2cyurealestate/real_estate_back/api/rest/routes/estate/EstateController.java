@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author Aldric Vitali Silvestre
  */
@@ -39,5 +41,11 @@ public class EstateController {
     ) throws Exception {
         Page<Estate> page = estateService.getPage(pageParams, filtersParams);
         return ResponseEntity.ok(RespPage.of(page, RespEstate::new));
+    }
+
+    @GetMapping("/positions")
+    public ResponseEntity<List<RespEstatePosition>> getEstatesPositions() throws Exception {
+        var positions = estateService.getAllEstatePositions();
+        return ResponseEntity.ok(positions.stream().map(RespEstatePosition::new).toList());
     }
 }

@@ -3,6 +3,7 @@ package com.github.m2cyurealestate.real_estate_back.services.estate;
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.PageParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
+import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
 import com.github.m2cyurealestate.real_estate_back.security.jwt.AuthenticationHandler;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -49,5 +51,10 @@ public class EstateServiceImpl implements EstateService {
         Pageable pageable = PageRequest.of(pageParams.getPage(), pageSize);
 
         return estateDao.findPage(pageable, filtersParams, user);
+    }
+
+    @Override
+    public List<EstatePosition> getAllEstatePositions() {
+        return estateDao.findAllEstatePositions();
     }
 }
