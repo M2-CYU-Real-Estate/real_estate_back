@@ -3,9 +3,11 @@ package com.github.m2cyurealestate.real_estate_back.services.estate;
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.PageParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
+import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,4 +29,6 @@ public interface EstateService {
      * @return A page of estates
      */
     Page<Estate> getPage(PageParams pageParams, EstateFiltersParams filtersParams);
+
+    List<EstatePosition> getAllEstatePositions();
 }

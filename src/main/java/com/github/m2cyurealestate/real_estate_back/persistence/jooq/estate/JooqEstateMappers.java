@@ -1,9 +1,13 @@
 package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
+import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
+import org.jooq.Record3;
+
+import java.math.BigDecimal;
 
 /**
  * @author Aldric Vitali Silvestre
@@ -44,6 +48,13 @@ public class JooqEstateMappers {
                 RateClass.fromString(record.getGazemission()),
                 record.getDt(),
                 record.getDt()
+        );
+    }
+
+    public EstatePosition toEstatePosition(Record3<Integer, BigDecimal, BigDecimal> record) {
+        return new EstatePosition(record.value1(),
+                                  record.value2().toPlainString(),
+                                  record.value3().toPlainString()
         );
     }
 }
