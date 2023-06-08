@@ -5,14 +5,12 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.EstateType;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.ConditionBuilder;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.Condition;
-import org.jooq.SelectQuery;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handler of the multiple filters that can receive the dao.

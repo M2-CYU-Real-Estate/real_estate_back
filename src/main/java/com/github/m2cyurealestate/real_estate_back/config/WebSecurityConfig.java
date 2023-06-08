@@ -81,7 +81,7 @@ public class WebSecurityConfig {
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource()).and()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/*", "/health", "/health/*", "/api-docs*", "/api-docs/**").permitAll()
+                .requestMatchers("*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(entryPoint)
