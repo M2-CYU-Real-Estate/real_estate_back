@@ -4,6 +4,9 @@
 server.version=0.0.1
 server.url_front=http://localhost:8080
 
+# ==== WEBSERVICE ====
+webservice.url=http://35.241.200.189/ml_ws
+
 # ==== SECURITY ====
 jwt.header=Authorization
 jwt.expirationSeconds=604800
