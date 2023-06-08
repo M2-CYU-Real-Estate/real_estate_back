@@ -20,4 +20,6 @@ public interface EstateDao {
     Page<Estate> findPage(Pageable pageable, EstateFiltersParams filtersParams, Optional<User> user);
 
     List<EstatePosition> findAllEstatePositions();
+
+    Page<Estate> findFavorites(Pageable pageable, User user);
 }

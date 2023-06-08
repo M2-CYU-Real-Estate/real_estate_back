@@ -6,6 +6,7 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
+import com.github.m2cyurealestate.real_estate_back.dao.user.UserDao;
 import com.github.m2cyurealestate.real_estate_back.security.jwt.AuthenticationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,11 +26,14 @@ public class EstateServiceImpl implements EstateService {
 
     private final EstateDao estateDao;
 
+    private final UserDao userDao;
+
     private final AuthenticationHandler authenticationHandler;
 
     @Autowired
-    public EstateServiceImpl(EstateDao estateDao, AuthenticationHandler authenticationHandler) {
+    public EstateServiceImpl(EstateDao estateDao, UserDao userDao, AuthenticationHandler authenticationHandler) {
         this.estateDao = estateDao;
+        this.userDao = userDao;
         this.authenticationHandler = authenticationHandler;
     }
 
@@ -37,9 +41,10 @@ public class EstateServiceImpl implements EstateService {
     @Transactional
     public Estate getById(long id) {
         Optional<User> user = authenticationHandler.findUserFromContext();
-        // TODO: update user visits
-        return estateDao.findById(id, user)
+        Estate estate = estateDao.findById(id, user)
                 .orElseThrow();
+        user.ifPresent(u -> userDao.addNavigation(u, estate.getUrl()));
+        return estate;
     }
 
     @Override
@@ -56,5 +61,16 @@ public class EstateServiceImpl implements EstateService {
     @Override
     public List<EstatePosition> getAllEstatePositions() {
         return estateDao.findAllEstatePositions();
+    }
+
+    @Override
+    public Page<Estate> getFavorites(PageParams pageParams) {
+        User user = authenticationHandler.getUserFromContext();
+
+        // Create page request
+        int pageSize = pageParams.getPageSize().orElse(10);
+        Pageable pageable = PageRequest.of(pageParams.getPage(), pageSize);
+
+        return estateDao.findFavorites(pageable, user);
     }
 }

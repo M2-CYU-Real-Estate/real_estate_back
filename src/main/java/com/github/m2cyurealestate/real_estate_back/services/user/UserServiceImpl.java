@@ -1,9 +1,11 @@
 package com.github.m2cyurealestate.real_estate_back.services.user;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqRegister;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.favorites.ReqAddFavorite;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.business.user.UserRole;
 import com.github.m2cyurealestate.real_estate_back.dao.user.UserDao;
+import com.github.m2cyurealestate.real_estate_back.security.jwt.AuthenticationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Service;
  * @author Aldric Vitali Silvestre
  */
 @Service
-public class UserServiceImpl implements UserDetailsService, UserService {
+public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -25,11 +27,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthenticationHandler authenticationHandler;
+
     @Autowired
     public UserServiceImpl(UserDao userRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationHandler authenticationHandler) {
         this.userDao = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationHandler = authenticationHandler;
     }
 
     @Override
@@ -65,16 +71,22 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         userDao.save(new User(username, email, encryptedPassword, UserRole.ADMIN));
     }
 
+    @Override
+    public void addFavorite(ReqAddFavorite request) {
+        User user = authenticationHandler.getUserFromContext();
+        userDao.addFavorite(user, request.estateUrl());
+    }
+
+    @Override
+    public void removeFavorite(ReqAddFavorite request) {
+        User user = authenticationHandler.getUserFromContext();
+        userDao.removeFavorite(user, request.estateUrl());
+    }
+
     private void validateCanRegister(String email) {
         if (userDao.existsByEmail(email)) {
             throw new IllegalArgumentException("Another user with this email address already exists");
         }
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDao.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Cannot find user by email"));
     }
 
 }

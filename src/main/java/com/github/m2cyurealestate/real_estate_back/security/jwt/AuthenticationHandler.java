@@ -27,16 +27,12 @@ public class AuthenticationHandler {
 
     private final AuthenticationManager authenticationManager;
 
-    private final UserDetailsService userDetailsService;
-
     private final JwtTokenHandler tokenHandler;
 
     @Autowired
     public AuthenticationHandler(AuthenticationManager authenticationManager,
-                                 UserDetailsService userDetailsService,
                                  JwtTokenHandler tokenHandler) {
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
         this.tokenHandler = tokenHandler;
     }
 
