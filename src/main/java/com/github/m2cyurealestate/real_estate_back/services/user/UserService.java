@@ -1,6 +1,8 @@
 package com.github.m2cyurealestate.real_estate_back.services.user;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqRegister;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.favorites.ReqAddFavorite;
+import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 
 import java.util.NoSuchElementException;
@@ -26,4 +28,9 @@ public interface UserService {
     User getUserById(long id) throws NoSuchElementException;
 
     void registerDefaultAdminIfNotFound(String username, String email, String encryptedPassword);
+
+    void addFavorite(ReqAddFavorite request);
+
+    void removeFavorite(ReqAddFavorite request);
+
 }

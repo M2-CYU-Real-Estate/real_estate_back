@@ -120,4 +120,23 @@ public class JooqEstateDao implements EstateDao {
                 .map(estateMappers::toEstatePosition)
                 .toList();
     }
+
+    @Override
+    public Page<Estate> findFavorites(Pageable pageable, User user) {
+        var select = dsl.select(ESTATE.asterisk())
+                .from(ESTATE)
+                .innerJoin(USER_LIKES)
+                .on(ESTATE.URL.eq(USER_LIKES.ESTATE_LINK))
+                .where(USER_LIKES.ID_USER.eq(user.getId().intValue()));
+
+        // Perform another request to get total count
+        int totalCount = dsl.fetchCount(select);
+
+        // Then, fetch the list of elements
+        List<Estate> estates = select.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch(r -> estateMappers.toEstate(r.into(JqEstateRecord.class), true));
+
+        return new PageImpl<>(estates, pageable, totalCount);
+    }
 }

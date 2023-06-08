@@ -79,6 +79,7 @@ public class JooqUserDao implements UserDao {
 
     @Override
     public void addFavorite(User user, String estateUrl) {
+
         // Check if the favorite is already set
         boolean doesFavoriteExists = checkFavoriteExists(user, estateUrl);
 
@@ -93,7 +94,10 @@ public class JooqUserDao implements UserDao {
                 LocalDateTime.now()
         );
 
-        int insertResult = like.insert();
+        int insertResult = dsl.insertInto(USER_LIKES)
+                .set(like)
+                .execute();
+
         if (insertResult != 1) {
             throw new RuntimeException("Cannot insert the favorite : result code is 0");
         }
@@ -127,7 +131,10 @@ public class JooqUserDao implements UserDao {
                 LocalDateTime.now()
         );
 
-        int insertResult = navigation.insert();
+        int insertResult = dsl.insertInto(USER_NAVIGATION)
+                .set(navigation)
+                .execute();
+
         if (insertResult != 1) {
             throw new RuntimeException("Cannot insert the favorite : result code is 0");
         }
