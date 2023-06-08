@@ -18,4 +18,10 @@ public interface UserDao {
     User save(User user);
 
     void updateLastLoginDate(long id);
+
+    void addFavorite(User user, String estateUrl);
+
+    void removeFavorite(User user, String estateUrl);
+
+    void addNavigation(User user, String estateUrl);
 }

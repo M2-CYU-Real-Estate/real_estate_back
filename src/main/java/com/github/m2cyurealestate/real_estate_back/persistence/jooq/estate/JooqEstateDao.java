@@ -60,8 +60,7 @@ public class JooqEstateDao implements EstateDao {
                     boolean isFavorite = dsl.fetchExists(dsl.selectFrom(USER_LIKES)
                                                                  .where(USER_LIKES.ID_USER.cast(Long.class)
                                                                                 .eq(u.getId()))
-                                                                 .and(USER_LIKES.ID_ESTATE.cast(Integer.class)
-                                                                              .eq(r.getId())));
+                                                                 .and(USER_LIKES.ESTATE_LINK.eq(r.getUrl())));
                     return estateMappers.toEstate(r, isFavorite);
                 })
                 // We don't have the user, simply map the record to the domain class
@@ -91,18 +90,18 @@ public class JooqEstateDao implements EstateDao {
 
     private Consumer<User> updateFavorites(List<Estate> estates) {
         return u -> {
-            var ids = estates.stream().map(Estate::getId).toList();
+            var ids = estates.stream().map(Estate::getUrl).toList();
 
             var recordByEstateId = dsl.select(DSL.when(USER_LIKES.ID_USER.cast(Long.class).eq(u.getId()), true)
-                                                      .otherwise(false), USER_LIKES.ID_ESTATE.cast(Long.class))
+                                                      .otherwise(false), USER_LIKES.ESTATE_LINK)
                     .from(USER_LIKES)
-                    .where(USER_LIKES.ID_ESTATE.cast(Long.class).in(ids))
-                    .fetchMap(USER_LIKES.ID_ESTATE.cast(Long.class));
+                    .where(USER_LIKES.ESTATE_LINK.in(ids))
+                    .fetchMap(USER_LIKES.ESTATE_LINK);
 
             // Update the "favorite" field
             estates.forEach(e -> {
                 // If the row is found, it means that we have a like !
-                Optional.ofNullable(recordByEstateId.get(e.getId())).ifPresent(record -> e.setFavorite(true));
+                Optional.ofNullable(recordByEstateId.get(e.getUrl())).ifPresent(record -> e.setFavorite(true));
             });
         };
     }
