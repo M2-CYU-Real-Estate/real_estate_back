@@ -227,22 +227,23 @@ public class JooqEstateDao implements EstateDao {
                 .fetchOptional(Record1::value1)
                 .orElseThrow();
 
+        Field<String> upperTypeEstate = DSL.upper(ESTATE.TYPE_ESTATE);
         Map<String, Record2<String, BigDecimal>> pricePerType = dsl.select(
-                        ESTATE.TYPE_ESTATE,
+                        upperTypeEstate,
                         DSL.avg(ESTATE.PRICE)
                 )
                 .from(ESTATE)
                 .innerJoin(CITY)
                 .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
                 .where(CITY.POSTAL_CODE.eq(postalCode))
-                .groupBy(ESTATE.TYPE_ESTATE)
-                .fetchMap(ESTATE.TYPE_ESTATE);
+                .groupBy(upperTypeEstate)
+                .fetchMap(upperTypeEstate);
 
-        BigDecimal apartmentMean = Optional.ofNullable(pricePerType.get(JooqEstateType.APARTMENT.getName()))
+        BigDecimal apartmentMean = Optional.ofNullable(pricePerType.get(JooqEstateType.APARTMENT.getName().toUpperCase()))
                 .map(Record2::value2)
                 .orElse(BigDecimal.valueOf(-1L));
 
-        BigDecimal houseMean = Optional.ofNullable(pricePerType.get(JooqEstateType.HOUSE.getName()))
+        BigDecimal houseMean = Optional.ofNullable(pricePerType.get(JooqEstateType.HOUSE.getName().toUpperCase()))
                 .map(Record2::value2)
                 .orElse(BigDecimal.valueOf(-1L));
 

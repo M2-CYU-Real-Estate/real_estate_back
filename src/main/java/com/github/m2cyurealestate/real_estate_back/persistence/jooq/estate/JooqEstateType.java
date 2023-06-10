@@ -40,7 +40,7 @@ public enum JooqEstateType {
 
     public static EstateType findEstateType(String s) {
         return Arrays.stream(JooqEstateType.values())
-                .filter(j -> j.getName().equals(s))
+                .filter(j -> j.getName().equalsIgnoreCase(s))
                 .map(JooqEstateType::getEstateType)
                 .findAny()
                 .orElse(EstateType.UNKNOWN);
