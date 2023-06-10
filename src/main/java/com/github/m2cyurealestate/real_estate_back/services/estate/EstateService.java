@@ -3,6 +3,7 @@ package com.github.m2cyurealestate.real_estate_back.services.estate;
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.PageParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespAdvice;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespStatistics;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import org.springframework.data.domain.Page;
@@ -34,4 +35,6 @@ public interface EstateService {
     Page<Estate> getFavorites(PageParams pageParams);
 
     RespAdvice getAdvices(long estateId);
+
+    RespStatistics getStatistics(long estateId);
 }

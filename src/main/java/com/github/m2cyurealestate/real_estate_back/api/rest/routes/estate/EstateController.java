@@ -43,6 +43,14 @@ public class EstateController {
         return ResponseEntity.ok(advice);
     }
 
+    @GetMapping("/{id}/stats")
+    public ResponseEntity<RespStatistics> getEstateStatistics(@PathVariable("id") long id) throws Exception {
+        Delayer delayer = new Delayer(500, 50);
+        var stats = estateService.getStatistics(id);
+        delayer.applyDelay();
+        return ResponseEntity.ok(stats);
+    }
+
     @GetMapping("")
     public ResponseEntity<RespPage<RespEstate>> getEstatesPage(
             PageParams pageParams,
