@@ -41,6 +41,8 @@ public class JooqCityDao implements CityDao {
     public Optional<City> findByPostalCode(String postalCode) {
         return selectAll()
                 .where(CITY.POSTAL_CODE.eq(postalCode))
+                // Maybe link with city name ? hard...
+                .limit(1)
                 .fetchOptional(cityMappers::toCity);
     }
 
@@ -48,6 +50,7 @@ public class JooqCityDao implements CityDao {
     public Optional<City> findByInseeCode(String inseeCode) {
         return selectAll()
                 .where(CITY.INSEE_CODE.eq(inseeCode))
+                .limit(1)
                 .fetchOptional(cityMappers::toCity);
     }
 
