@@ -4,6 +4,7 @@ import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.Estate
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
+import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
@@ -44,13 +45,18 @@ public class JooqEstateDao implements EstateDao {
     @Autowired
     public JooqEstateDao(DSLContext dsl) {
         this.dsl = dsl;
-        estateMappers = new JooqEstateMappers(dsl);
+        estateMappers = new JooqEstateMappers();
         estateFilters = new JooqEstateFilters();
     }
 
     @Override
     public Optional<Estate> findById(long id, Optional<User> user) {
         return dsl.selectFrom(ESTATE).where(ESTATE.ID.eq((int) id)).fetchOptional().map(fetchWithFavorite(user));
+    }
+
+    @Override
+    public Optional<Estate> findById(long id) {
+        return findById(id, Optional.empty());
     }
 
     private Function<JqEstateRecord, Estate> fetchWithFavorite(Optional<User> user) {
@@ -138,5 +144,19 @@ public class JooqEstateDao implements EstateDao {
                 .fetch(r -> estateMappers.toEstate(r.into(JqEstateRecord.class), true));
 
         return new PageImpl<>(estates, pageable, totalCount);
+    }
+
+    @Override
+    public CityPriceStats getCityPriceStats(Estate estate) {
+        return dsl.select(DSL.min(ESTATE.PRICE),
+                   DSL.max(ESTATE.PRICE),
+                   DSL.avg(ESTATE.PRICE)
+                )
+                .from(ESTATE)
+                .innerJoin(CITY)
+                .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
+                .where(ESTATE.ID.eq(estate.getId().intValue()))
+                .fetchOptional(estateMappers::toCityPriceStats)
+                .orElseThrow();
     }
 }

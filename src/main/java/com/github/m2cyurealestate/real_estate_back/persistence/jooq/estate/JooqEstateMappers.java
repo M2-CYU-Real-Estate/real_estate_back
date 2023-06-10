@@ -3,6 +3,7 @@ package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
+import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
@@ -13,12 +14,6 @@ import java.math.BigDecimal;
  * @author Aldric Vitali Silvestre
  */
 public class JooqEstateMappers {
-
-    private final DSLContext dsl;
-
-    public JooqEstateMappers(DSLContext dsl) {
-        this.dsl = dsl;
-    }
 
     public Estate toEstate(JqEstateRecord record, boolean isFavorite) {
         return new Estate(
@@ -55,6 +50,14 @@ public class JooqEstateMappers {
         return new EstatePosition(record.value1(),
                                   record.value2().toPlainString(),
                                   record.value3().toPlainString()
+        );
+    }
+
+    public CityPriceStats toCityPriceStats(Record3<Long, Long, BigDecimal> record) {
+        return new CityPriceStats(
+                new BigDecimal(record.value1()),
+                new BigDecimal(record.value2()),
+                record.value3()
         );
     }
 }

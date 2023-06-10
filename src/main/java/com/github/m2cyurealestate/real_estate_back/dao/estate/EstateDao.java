@@ -17,9 +17,13 @@ public interface EstateDao {
 
     Optional<Estate> findById(long id, Optional<User> user);
 
+    Optional<Estate> findById(long id);
+
     Page<Estate> findPage(Pageable pageable, EstateFiltersParams filtersParams, Optional<User> user);
 
     List<EstatePosition> findAllEstatePositions();
 
     Page<Estate> findFavorites(Pageable pageable, User user);
+
+    CityPriceStats getCityPriceStats(Estate estate);
 }

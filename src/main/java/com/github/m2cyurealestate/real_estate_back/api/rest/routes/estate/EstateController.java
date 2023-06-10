@@ -2,6 +2,7 @@ package com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.PageParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.RespPage;
+import com.github.m2cyurealestate.real_estate_back.api.rest.utils.Delayer;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.services.estate.EstateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,14 @@ public class EstateController {
     public ResponseEntity<RespEstate> getEstateById(@PathVariable("id") long id) throws Exception {
         var estate = estateService.getById(id);
         return ResponseEntity.ok(new RespEstate(estate));
+    }
+
+    @GetMapping("/{id}/advice")
+    public ResponseEntity<RespAdvice> getEstateAdvice(@PathVariable("id") long id) throws Exception {
+        Delayer delayer = new Delayer(1500, 500);
+        var advice = estateService.getAdvices(id);
+        delayer.applyDelay();
+        return ResponseEntity.ok(advice);
     }
 
     @GetMapping("")
