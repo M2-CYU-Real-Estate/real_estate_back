@@ -7,6 +7,7 @@ import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
+import org.jooq.Record4;
 
 import java.math.BigDecimal;
 
@@ -46,10 +47,11 @@ public class JooqEstateMappers {
         );
     }
 
-    public EstatePosition toEstatePosition(Record3<Integer, BigDecimal, BigDecimal> record) {
+    public EstatePosition toEstatePosition(Record4<Integer, String, BigDecimal, BigDecimal> record) {
         return new EstatePosition(record.value1(),
-                                  record.value2().toPlainString(),
-                                  record.value3().toPlainString()
+                                  record.value2(),
+                                  record.value3().toPlainString(),
+                                  record.value4().toPlainString()
         );
     }
 

@@ -7,11 +7,12 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePositio
  */
 public record RespEstatePosition(
         long id,
+        String title,
         String lat,
         String lon
 ) {
 
     public RespEstatePosition(EstatePosition pos) {
-        this(pos.id(), pos.latitude(), pos.longitude());
+        this(pos.id(), pos.title(), pos.latitude(), pos.longitude());
     }
 }

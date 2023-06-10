@@ -12,9 +12,7 @@ import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record2;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Aldric Vitali Silvestre
@@ -123,14 +122,24 @@ public class JooqEstateDao implements EstateDao {
 
     @Override
     public List<EstatePosition> findAllEstatePositions() {
-        // Create a map in order to avoid possible duplicates
-        var positions = dsl.select(ESTATE.ID, CITY.LATITUDE, CITY.LONGITUDE)
+        var recordById = dsl.select(ESTATE.ID,
+                                   ESTATE.TITLE,
+                                   CITY.LATITUDE,
+                                   CITY.LONGITUDE
+                )
                 .from(ESTATE)
                 .innerJoin(CITY)
                 .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
                 .limit(MAX_POSITION_ROWS)
-                .fetchMap(ESTATE.ID);
-        return positions.values()
+                .stream()
+                .collect(Collectors.toMap(
+                        Record4::value1,
+                        Function.identity(),
+                        // Keep only the first record if same id found
+                        (r1, r2) -> r1
+                ));
+        return recordById
+                .values()
                 .stream()
                 .map(estateMappers::toEstatePosition)
                 .toList();

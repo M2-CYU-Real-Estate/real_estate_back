@@ -6,6 +6,8 @@ package com.github.m2cyurealestate.real_estate_back.business.estate;
  */
 public record EstatePosition(
         long id,
+
+        String title,
         String latitude,
         String longitude
 ) {
