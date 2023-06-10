@@ -26,4 +26,6 @@ public interface EstateDao {
     Page<Estate> findFavorites(Pageable pageable, User user);
 
     CityPriceStats getCityPriceStats(Estate estate);
+
+    EstateStatistics getEstateStatistics(long id);
 }

@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
  */
 public class Estate {
 
-    // TODO : replace with optionals
     private Long id;
 
     private boolean isFavorite;

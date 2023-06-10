@@ -6,11 +6,15 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePositio
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
+import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateStatistics;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesScoreTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +22,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -34,6 +40,9 @@ public class JooqEstateDao implements EstateDao {
     public static final JqUserLikesTable USER_LIKES = JqUserLikesTable.USER_LIKES;
 
     public static final JqCitiesTable CITY = JqCitiesTable.CITIES;
+
+    public static final JqCitiesScoreTable CITY_SCORE = JqCitiesScoreTable.CITIES_SCORE;
+
     public static final int MAX_POSITION_ROWS = 50_000;
 
     private final DSLContext dsl;
@@ -149,14 +158,91 @@ public class JooqEstateDao implements EstateDao {
     @Override
     public CityPriceStats getCityPriceStats(Estate estate) {
         return dsl.select(DSL.min(ESTATE.PRICE),
-                   DSL.max(ESTATE.PRICE),
-                   DSL.avg(ESTATE.PRICE)
+                          DSL.max(ESTATE.PRICE),
+                          DSL.avg(ESTATE.PRICE)
                 )
                 .from(ESTATE)
                 .innerJoin(CITY)
                 .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
                 .where(ESTATE.ID.eq(estate.getId().intValue()))
+                .and(ESTATE.PRICE.notEqual(-1L))
                 .fetchOptional(estateMappers::toCityPriceStats)
                 .orElseThrow();
+    }
+
+    @Override
+    public EstateStatistics getEstateStatistics(long estateId) {
+        BigDecimal meanPriceBigCities = fetchMeanPriceBigCities();
+        CityAvg meanPrices = fetchMeanPrices(estateId);
+        return new EstateStatistics(
+                meanPriceBigCities,
+                meanPrices.apartmentMean(),
+                meanPrices.houseMean()
+        );
+    }
+
+    private BigDecimal fetchMeanPriceBigCities() {
+        return dsl.select(DSL.avg(ESTATE.PRICE))
+                .from(ESTATE)
+                .innerJoin(CITY)
+                .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
+                // Paris etc, have multiple codes
+                .where(CITY.CITY_NAME.like("Paris %"),
+                       CITY.CITY_NAME.like("Marseille %"),
+                       CITY.CITY_NAME.like("Lyon %"),
+                       // We have Montpelier, Angers, etc.
+                       CITY.INSEE_CODE.eq("31555"),
+                       CITY.INSEE_CODE.eq("06088"),
+                       CITY.INSEE_CODE.eq("44109"),
+                       CITY.INSEE_CODE.eq("34172"),
+                       CITY.INSEE_CODE.eq("59350"),
+                       CITY.INSEE_CODE.eq("83137"),
+                       CITY.INSEE_CODE.eq("21231"),
+                       CITY.INSEE_CODE.eq("67482"),
+                       CITY.INSEE_CODE.eq("35238"),
+                       CITY.INSEE_CODE.eq("42218"),
+                       CITY.INSEE_CODE.eq("38185"),
+                       CITY.INSEE_CODE.eq("33063"),
+                       CITY.INSEE_CODE.eq("49007")
+                )
+                .fetchOptional(Record1::value1)
+                .orElse(BigDecimal.valueOf(-1));
+    }
+
+    private CityAvg fetchMeanPrices(long estateId) {
+        String postalCode = dsl.selectDistinct(CITY.POSTAL_CODE)
+                .from(ESTATE)
+                .innerJoin(CITY)
+                .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
+                .where(ESTATE.ID.eq((int) estateId))
+                .fetchOptional(Record1::value1)
+                .orElseThrow();
+
+        Map<String, Record2<String, BigDecimal>> pricePerType = dsl.select(
+                        ESTATE.TYPE_ESTATE,
+                        DSL.avg(ESTATE.PRICE)
+                )
+                .from(ESTATE)
+                .innerJoin(CITY)
+                .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
+                .where(CITY.POSTAL_CODE.eq(postalCode))
+                .groupBy(ESTATE.TYPE_ESTATE)
+                .fetchMap(ESTATE.TYPE_ESTATE);
+
+        BigDecimal apartmentMean = Optional.ofNullable(pricePerType.get(JooqEstateType.APARTMENT.getName()))
+                .map(Record2::value2)
+                .orElse(BigDecimal.valueOf(-1L));
+
+        BigDecimal houseMean = Optional.ofNullable(pricePerType.get(JooqEstateType.HOUSE.getName()))
+                .map(Record2::value2)
+                .orElse(BigDecimal.valueOf(-1L));
+
+        return new CityAvg(houseMean, apartmentMean);
+    }
+
+    record CityAvg(
+            BigDecimal houseMean,
+            BigDecimal apartmentMean
+    ) {
     }
 }

@@ -3,6 +3,7 @@ package com.github.m2cyurealestate.real_estate_back.services.estate;
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.PageParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespAdvice;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespStatistics;
 import com.github.m2cyurealestate.real_estate_back.business.Month;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Aldric Vitali Silvestre
@@ -119,5 +121,23 @@ public class EstateServiceImpl implements EstateService {
         // TODO computePricePerMonth : for now, we don't have the variations yet
         return Arrays.stream(Month.values())
                 .collect(Collectors.toMap(Function.identity(), m -> price));
+    }
+
+    @Override
+    public RespStatistics getStatistics(long estateId) {
+        var estate = estateDao.findById(estateId).orElseThrow();
+        var scores = cityDao.findByPostalCode(estate.getPostalCode()).orElseThrow().scores();
+        var stats = estateDao.getEstateStatistics(estateId);
+        return new RespStatistics(
+                BigDecimal.valueOf(scores.average()),
+                BigDecimal.valueOf(scores.security()),
+                BigDecimal.valueOf(scores.education()),
+                BigDecimal.valueOf(scores.hobbies()),
+                BigDecimal.valueOf(scores.environment()),
+                BigDecimal.valueOf(scores.practicality()),
+                stats.meanPriceBigCities(),
+                stats.meanPriceApartment(),
+                stats.meanPriceHouse()
+        );
     }
 }
