@@ -37,4 +37,28 @@ public class UserController {
         return ResponseEntity.ok(new RespUser(user));
     }
 
+    @PostMapping("profiles")
+    public ResponseEntity<Void> createProfile(@RequestBody ReqCreateProfile request) throws Exception {
+        userService.createProfile(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("profiles/{id}")
+    public ResponseEntity<Void> modifyProfile(@PathVariable("id") long id,
+                                              @RequestBody ReqCreateProfile request) throws Exception {
+        userService.modifyProfile(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("profiles/{id}")
+    public ResponseEntity<Void> deleteProfile(@PathVariable("id") long id) throws Exception {
+        userService.deleteProfile(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("profiles/main/{id}")
+    public ResponseEntity<Void> changeMainProfile(@PathVariable("id") long id) throws Exception {
+        userService.setToMainProfile(id);
+        return ResponseEntity.ok().build();
+    }
 }
