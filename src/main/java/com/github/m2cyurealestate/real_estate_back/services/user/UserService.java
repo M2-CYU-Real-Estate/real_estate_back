@@ -2,6 +2,7 @@ package com.github.m2cyurealestate.real_estate_back.services.user;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqRegister;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.favorites.ReqAddFavorite;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.user.ReqCreateProfile;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 
@@ -29,8 +30,17 @@ public interface UserService {
 
     void registerDefaultAdminIfNotFound(String username, String email, String encryptedPassword);
 
+    // ==== FAVORITES ====
     void addFavorite(ReqAddFavorite request);
 
     void removeFavorite(ReqAddFavorite request);
 
+    // ==== PROFILES ====
+    void createProfile(ReqCreateProfile request);
+
+    void modifyProfile(long profileId, ReqCreateProfile request);
+
+    void deleteProfile(long profileId);
+
+    void setToMainProfile(long profileId);
 }

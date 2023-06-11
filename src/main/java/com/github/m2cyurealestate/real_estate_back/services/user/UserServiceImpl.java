@@ -2,6 +2,7 @@ package com.github.m2cyurealestate.real_estate_back.services.user;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqRegister;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.favorites.ReqAddFavorite;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.user.ReqCreateProfile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.business.user.UserRole;
 import com.github.m2cyurealestate.real_estate_back.dao.user.UserDao;
@@ -81,6 +82,26 @@ public class UserServiceImpl implements UserService {
     public void removeFavorite(ReqAddFavorite request) {
         User user = authenticationHandler.getUserFromContext();
         userDao.removeFavorite(user, request.estateUrl());
+    }
+
+    @Override
+    public void createProfile(ReqCreateProfile request) {
+        User user = authenticationHandler.getUserFromContext();
+    }
+
+    @Override
+    public void modifyProfile(long profileId, ReqCreateProfile request) {
+        User user = authenticationHandler.getUserFromContext();
+    }
+
+    @Override
+    public void deleteProfile(long profileId) {
+        User user = authenticationHandler.getUserFromContext();
+    }
+
+    @Override
+    public void setToMainProfile(long profileId) {
+        User user = authenticationHandler.getUserFromContext();
     }
 
     private void validateCanRegister(String email) {
