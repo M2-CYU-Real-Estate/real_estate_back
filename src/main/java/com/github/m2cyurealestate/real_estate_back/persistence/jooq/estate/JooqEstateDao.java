@@ -127,11 +127,13 @@ public class JooqEstateDao implements EstateDao {
                                    CITY.LATITUDE,
                                    CITY.LONGITUDE
                 )
+                .distinctOn(ESTATE.ID)
                 .from(ESTATE)
                 .innerJoin(CITY)
                 .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
                 .limit(MAX_POSITION_ROWS)
                 .stream()
+                // This is more a safeguard than anything, as the distinctOn already exists
                 .collect(Collectors.toMap(
                         Record4::value1,
                         Function.identity(),
