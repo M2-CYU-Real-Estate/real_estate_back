@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 class EstatePositionCache {
 
-    public static final int MAX_POSITION_ROWS = 50_000;
+    public static final int MAX_POSITION_ROWS = 15_000;
 
     public static final JqEstateTable ESTATE = JqEstateTable.ESTATE;
 
@@ -74,14 +74,13 @@ class EstatePositionCache {
                                           // Keep only the first record if same id found
                                           (r1, r2) -> r1
                 ));
-        List<EstatePosition> positions = recordById.values()
+        // Update the cache here
+        cache = recordById.values()
                 .stream()
                 .toList()
                 .stream()
                 .map(estateMappers::toEstatePosition)
                 .toList();
-        // Update the cache here
-        cache = positions;
     }
 
     private List<EstatePosition> findFromCache() {
