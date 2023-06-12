@@ -42,7 +42,6 @@ public class JooqEstateDao implements EstateDao {
 
     public static final JqCitiesScoreTable CITY_SCORE = JqCitiesScoreTable.CITIES_SCORE;
 
-    public static final int MAX_POSITION_ROWS = 50_000;
 
     private final DSLContext dsl;
 
@@ -50,11 +49,14 @@ public class JooqEstateDao implements EstateDao {
 
     private final JooqEstateFilters estateFilters;
 
+    private final EstatePositionCache positionCache;
+
     @Autowired
     public JooqEstateDao(DSLContext dsl) {
         this.dsl = dsl;
         estateMappers = new JooqEstateMappers();
         estateFilters = new JooqEstateFilters();
+        positionCache = new EstatePositionCache(dsl, estateMappers);
     }
 
     @Override
@@ -122,29 +124,7 @@ public class JooqEstateDao implements EstateDao {
 
     @Override
     public List<EstatePosition> findAllEstatePositions() {
-        var recordById = dsl.select(ESTATE.ID,
-                                   ESTATE.TITLE,
-                                   CITY.LATITUDE,
-                                   CITY.LONGITUDE
-                )
-                .distinctOn(ESTATE.ID)
-                .from(ESTATE)
-                .innerJoin(CITY)
-                .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
-                .limit(MAX_POSITION_ROWS)
-                .stream()
-                // This is more a safeguard than anything, as the distinctOn already exists
-                .collect(Collectors.toMap(
-                        Record4::value1,
-                        Function.identity(),
-                        // Keep only the first record if same id found
-                        (r1, r2) -> r1
-                ));
-        return recordById
-                .values()
-                .stream()
-                .map(estateMappers::toEstatePosition)
-                .toList();
+        return positionCache.fetchEstatePositions();
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.math.RoundingMode;
 /**
  * @author Aldric Vitali Silvestre
  */
-public class JooqEstateMappers {
+class JooqEstateMappers {
 
     public Estate toEstate(JqEstateRecord record, boolean isFavorite) {
         return new Estate(

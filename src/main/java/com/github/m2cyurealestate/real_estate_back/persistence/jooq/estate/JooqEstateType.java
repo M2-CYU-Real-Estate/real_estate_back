@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  * @author Aldric Vitali Silvestre
  */
-public enum JooqEstateType {
+enum JooqEstateType {
     HOUSE("Maison", EstateType.HOUSE),
     APARTMENT("Appartement", EstateType.APARTMENT);
 
