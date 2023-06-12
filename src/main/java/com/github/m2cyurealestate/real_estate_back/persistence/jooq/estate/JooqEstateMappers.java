@@ -10,6 +10,7 @@ import org.jooq.Record3;
 import org.jooq.Record4;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @author Aldric Vitali Silvestre
@@ -57,9 +58,9 @@ public class JooqEstateMappers {
 
     public CityPriceStats toCityPriceStats(Record3<Long, Long, BigDecimal> record) {
         return new CityPriceStats(
-                new BigDecimal(record.value1()),
-                new BigDecimal(record.value2()),
-                record.value3()
+                new BigDecimal(record.value1()).setScale(0, RoundingMode.DOWN),
+                new BigDecimal(record.value2()).setScale(0, RoundingMode.DOWN),
+                record.value3().setScale(0, RoundingMode.DOWN)
         );
     }
 }

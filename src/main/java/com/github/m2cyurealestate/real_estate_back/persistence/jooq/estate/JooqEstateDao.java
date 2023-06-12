@@ -174,8 +174,7 @@ public class JooqEstateDao implements EstateDao {
                 )
                 .from(ESTATE)
                 .innerJoin(CITY)
-                .on(ESTATE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
-                .where(ESTATE.ID.eq(estate.getId().intValue()))
+                .on(ESTATE.POSTAL_CODE.eq(estate.getPostalCode()))
                 .and(ESTATE.PRICE.notEqual(-1L))
                 .fetchOptional(estateMappers::toCityPriceStats)
                 .orElseThrow();
