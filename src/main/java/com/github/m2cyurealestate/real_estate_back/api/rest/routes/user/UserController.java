@@ -37,16 +37,22 @@ public class UserController {
         return ResponseEntity.ok(new RespUser(user));
     }
 
-    @PostMapping("profiles")
-    public ResponseEntity<Void> createProfile(@RequestBody ReqCreateProfile request) throws Exception {
-        userService.createProfile(request);
-        return ResponseEntity.ok().build();
-    }
-
     @PutMapping("profiles/{id}")
     public ResponseEntity<Void> modifyProfile(@PathVariable("id") long id,
                                               @RequestBody ReqCreateProfile request) throws Exception {
         userService.modifyProfile(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("profiles/{id}")
+    public ResponseEntity<RespProfile> getProfileById(@PathVariable("id") long id) throws Exception {
+        var profile = userService.getProfileById(id);
+        return ResponseEntity.ok(new RespProfile(profile));
+    }
+
+    @PostMapping("profiles")
+    public ResponseEntity<Void> createProfile(@RequestBody ReqCreateProfile request) throws Exception {
+        userService.createProfile(request);
         return ResponseEntity.ok().build();
     }
 

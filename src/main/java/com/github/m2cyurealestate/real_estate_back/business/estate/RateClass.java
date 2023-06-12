@@ -1,5 +1,10 @@
 package com.github.m2cyurealestate.real_estate_back.business.estate;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Stream;
+
 /**
  * General enum for rated estate attributes with letter
  * (for example, the energy class)
@@ -33,6 +38,16 @@ public enum RateClass {
 
     public int getRating() {
         return rating;
+    }
+
+    /**
+     * Return a list containing all energy classes that are above this enum
+     * (this value is also included in the list).
+     */
+    public Stream<RateClass> getGreaterClasses() {
+        return Arrays.stream(RateClass.values())
+                .filter(c -> c.getRating() >= this.getRating())
+                .sorted(Comparator.comparing(RateClass::getRating).reversed());
     }
 
     /**

@@ -3,7 +3,9 @@ package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
+import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
+import com.github.m2cyurealestate.real_estate_back.dao.city.CityDao;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateStatistics;
@@ -12,7 +14,10 @@ import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
-import org.jooq.*;
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author Aldric Vitali Silvestre
@@ -42,21 +46,26 @@ public class JooqEstateDao implements EstateDao {
 
     public static final JqCitiesScoreTable CITY_SCORE = JqCitiesScoreTable.CITIES_SCORE;
 
-
     private final DSLContext dsl;
 
     private final JooqEstateMappers estateMappers;
 
     private final JooqEstateFilters estateFilters;
 
+    private final JooqEstateProfileFilters estateProfileFilters;
+
+    private final CityDao cityDao;
+
     private final EstatePositionCache positionCache;
 
     @Autowired
-    public JooqEstateDao(DSLContext dsl) {
+    public JooqEstateDao(DSLContext dsl, CityDao cityDao) {
         this.dsl = dsl;
+        this.cityDao = cityDao;
         estateMappers = new JooqEstateMappers();
         estateFilters = new JooqEstateFilters();
         positionCache = new EstatePositionCache(dsl, estateMappers);
+        estateProfileFilters = new JooqEstateProfileFilters();
     }
 
     @Override
@@ -236,4 +245,39 @@ public class JooqEstateDao implements EstateDao {
             BigDecimal apartmentMean
     ) {
     }
+
+    @Override
+    public Page<Estate> findByProfile(Profile profile, Pageable pageable, User user) {
+        var city = cityDao.findByPostalCode(profile.getPostalCode()).orElseThrow();
+
+        var conditions = estateProfileFilters.createConditions(profile, city);
+
+        // Need to perform the join for the conditions to be applied
+        var select = dsl.select(ESTATE.asterisk())
+                .distinctOn(ESTATE.ID)
+                .from(ESTATE)
+                .innerJoin(CITY)
+                .on(CITY.POSTAL_CODE.eq(ESTATE.POSTAL_CODE))
+                .innerJoin(CITY_SCORE)
+                .on(CITY_SCORE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
+                .where(conditions)
+                .orderBy(ESTATE.DT.desc(), ESTATE.ID.desc());
+
+        // Perform another request to get total count
+        int totalCount = dsl.fetchCount(select);
+
+        // Then, fetch the list of elements
+        List<Estate> estates = select.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch(r -> {
+                    var rec = r.into(JqEstateRecord.class);
+                    return estateMappers.toEstate(rec, false);
+                });
+
+        // If the user is present, we want to find the favorites
+        updateFavorites(estates).accept(user);
+
+        return new PageImpl<>(estates, pageable, totalCount);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqRegis
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.favorites.ReqAddFavorite;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.user.ReqCreateProfile;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
+import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 
 import java.util.NoSuchElementException;
@@ -43,4 +44,6 @@ public interface UserService {
     void deleteProfile(long profileId);
 
     void setToMainProfile(long profileId);
+
+    Profile getProfileById(long id);
 }

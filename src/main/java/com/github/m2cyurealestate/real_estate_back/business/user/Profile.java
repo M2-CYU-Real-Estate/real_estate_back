@@ -1,5 +1,6 @@
 package com.github.m2cyurealestate.real_estate_back.business.user;
 
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.user.ReqCreateProfile;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 
 import java.math.BigDecimal;

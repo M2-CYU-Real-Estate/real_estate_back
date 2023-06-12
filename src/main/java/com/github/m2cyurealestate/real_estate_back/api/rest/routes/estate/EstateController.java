@@ -8,10 +8,7 @@ import com.github.m2cyurealestate.real_estate_back.services.estate.EstateService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -64,5 +61,14 @@ public class EstateController {
     public ResponseEntity<List<RespEstatePosition>> getEstatesPositions() throws Exception {
         var positions = estateService.getAllEstatePositions();
         return ResponseEntity.ok(positions.stream().map(RespEstatePosition::new).toList());
+    }
+
+    @GetMapping("/search-profile")
+    public ResponseEntity<RespPage<RespEstate>> searchByProfile(
+            PageParams pageParams,
+            @RequestBody ReqSearchByProfile request
+    ) throws Exception {
+        var page = estateService.getByProfile(pageParams, request);
+        return ResponseEntity.ok(RespPage.of(page, RespEstate::new));
     }
 }

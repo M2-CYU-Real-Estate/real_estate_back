@@ -156,6 +156,14 @@ public class JooqUserDao implements UserDao {
     }
 
     @Override
+    public Optional<Profile> findProfileById(User user, long profileId) {
+        return dsl.selectFrom(PROFILE)
+                .where(PROFILE.ID_USER.eq(user.getId().intValue()))
+                .and(PROFILE.ID_ENTRY.eq((int) profileId))
+                .fetchOptional(profileMappers::toProfile);
+    }
+
+    @Override
     public void addProfile(User user, Profile profile) {
         var record = profileMappers.fromProfile(profile);
 
@@ -177,7 +185,6 @@ public class JooqUserDao implements UserDao {
                 .and(PROFILE.ID_ENTRY.eq((int) profileId))
                 .fetchOptional()
                 .orElseThrow();
-
         profileRecord = profileMappers.updateRecord(profileRecord, profile);
         profileRecord.store();
     }

@@ -2,11 +2,13 @@ package com.github.m2cyurealestate.real_estate_back.services.estate;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.page.PageParams;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
+import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.ReqSearchByProfile;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespAdvice;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespStatistics;
 import com.github.m2cyurealestate.real_estate_back.business.Month;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
+import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.dao.city.CityDao;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
@@ -16,6 +18,7 @@ import com.github.m2cyurealestate.real_estate_back.services.prediction.Predictio
 import com.github.m2cyurealestate.real_estate_back.services.prediction.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -155,5 +158,17 @@ public class EstateServiceImpl implements EstateService {
                 stats.meanPriceApartment(),
                 stats.meanPriceHouse()
         );
+    }
+
+    @Override
+    public Page<Estate> getByProfile(PageParams pageParams, ReqSearchByProfile request) {
+        User user = authenticationHandler.getUserFromContext();
+        var profile = userDao.findProfileById(user, request.profileId())
+                .orElseThrow();
+
+        int pageSize = pageParams.getPageSize().orElse(10);
+        Pageable pageable = PageRequest.of(pageParams.getPage(), pageSize);
+
+        return estateDao.findByProfile(profile, pageable, user);
     }
 }

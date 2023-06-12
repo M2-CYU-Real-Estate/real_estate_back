@@ -26,6 +26,8 @@ public interface UserDao {
 
     void addNavigation(User user, String estateUrl);
 
+    Optional<Profile> findProfileById(User user, long profileId);
+
     void addProfile(User user, Profile profile);
 
     void changeProfile(User user, long profileId, Profile profile);

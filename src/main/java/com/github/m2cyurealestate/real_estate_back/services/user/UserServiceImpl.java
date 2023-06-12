@@ -3,6 +3,7 @@ package com.github.m2cyurealestate.real_estate_back.services.user;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.auth.ReqRegister;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.favorites.ReqAddFavorite;
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.user.ReqCreateProfile;
+import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import com.github.m2cyurealestate.real_estate_back.business.user.UserRole;
 import com.github.m2cyurealestate.real_estate_back.dao.user.UserDao;
@@ -53,6 +54,12 @@ public class UserServiceImpl implements UserService {
         return userDao.save(user);
     }
 
+    private void validateCanRegister(String email) {
+        if (userDao.existsByEmail(email)) {
+            throw new IllegalArgumentException("Another user with this email address already exists");
+        }
+    }
+
     @Override
     public User getUserById(long id) {
         return userDao.findById(id)
@@ -85,13 +92,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Profile getProfileById(long id) {
+        User user = authenticationHandler.getUserFromContext();
+        return userDao.findProfileById(user, id).orElseThrow();
+    }
+
+    @Override
     public void createProfile(ReqCreateProfile request) {
         User user = authenticationHandler.getUserFromContext();
+        Profile profile = createProfileFromRequest(request, user);
+        userDao.addProfile(user, profile);
     }
 
     @Override
     public void modifyProfile(long profileId, ReqCreateProfile request) {
         User user = authenticationHandler.getUserFromContext();
+        userDao.changeProfile(user, profileId, createProfileFromRequest(request, user));
+    }
+
+    private Profile createProfileFromRequest(ReqCreateProfile request, User user) {
+        return new Profile(
+                user.getId(),
+                false,
+                request.name(),
+                request.budgetClass(),
+                request.postalCode(),
+                request.acceptableDistance(),
+                request.houseArea(),
+                request.rooms(),
+                request.bedrooms(),
+                request.bathrooms(),
+                request.minEnergyClass(),
+                request.balcony(),
+                request.fittedKitchen(),
+                request.scoreSecurity(),
+                request.scoreEducation(),
+                request.scoreHobbies(),
+                request.scoreEnvironment(),
+                request.scorePracticality()
+        );
     }
 
     @Override
@@ -102,12 +141,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void setToMainProfile(long profileId) {
         User user = authenticationHandler.getUserFromContext();
-    }
-
-    private void validateCanRegister(String email) {
-        if (userDao.existsByEmail(email)) {
-            throw new IllegalArgumentException("Another user with this email address already exists");
-        }
     }
 
 }
