@@ -29,7 +29,7 @@ public class PredictionController {
     }
 
     @GetMapping("")
-    public ResponseEntity<RespPrediction> predictPrice(@RequestBody ReqPrediction request) throws Exception {
+    public ResponseEntity<RespPrediction> predictPrice(ReqPrediction request) throws Exception {
         var delayer = new Delayer(1000, 200);
         var input = new PredictionInput(
                 request.houseArea(),
