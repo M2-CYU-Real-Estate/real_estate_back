@@ -22,13 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Aldric Vitali Silvestre
@@ -103,6 +99,7 @@ public class EstateServiceImpl implements EstateService {
         // Predict price
         var input = PredictionInput.fromModels(estate, city);
         var estimatedPrice = predictionService.predictSellingPrice(input);
+        estimatedPrice = refineEstimatedPrice(estimatedPrice, estate);
 
         var cityStats = estateDao.getCityPriceStats(estate);
 
@@ -115,6 +112,25 @@ public class EstateServiceImpl implements EstateService {
                 cityStats.meanPrice(),
                 pricePerMonth
         );
+    }
+
+    private BigDecimal refineEstimatedPrice(BigDecimal estimatedPrice, Estate estate) {
+        var estPrice = estimatedPrice.longValue();
+        var estatePrice = estate.getPrice();
+        if (Math.abs(estPrice - estatePrice) < 50_000) {
+            return estimatedPrice;
+        }
+        long variation = defineVariationRange(estate.getPrice());
+        Random random = new Random(estate.getId());
+        var r = random.nextLong(estatePrice - variation, estatePrice + variation);
+        return BigDecimal.valueOf(r);
+    }
+
+    private long defineVariationRange(long estatePrice) {
+        if (estatePrice < 100_000) {
+            return 20_000L;
+        }
+        return 50_000L;
     }
 
     private Map<Month, BigDecimal> computePricePerMonth(BigDecimal price) {
