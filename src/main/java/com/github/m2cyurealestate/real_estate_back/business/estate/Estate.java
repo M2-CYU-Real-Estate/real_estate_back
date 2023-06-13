@@ -70,6 +70,8 @@ public class Estate {
 
     private String clusterCoordinates;
 
+    private String departmentNumber;
+
     public Estate() {
     }
 
@@ -100,7 +102,8 @@ public class Estate {
                   LocalDateTime createdAt,
                   LocalDateTime lastUpdatedAt,
                   Integer cluster,
-                  String clusterCoordinates) {
+                  String clusterCoordinates,
+                  String departmentNumber) {
         this.id = id;
         this.isFavorite = isFavorite;
         this.title = title;
@@ -129,6 +132,7 @@ public class Estate {
         this.lastUpdatedAt = lastUpdatedAt;
         this.cluster = cluster;
         this.clusterCoordinates = clusterCoordinates;
+        this.departmentNumber = departmentNumber;
     }
 
     public Long getId() {
@@ -353,5 +357,13 @@ public class Estate {
 
     public void setClusterCoordinates(String clusterCoordinates) {
         this.clusterCoordinates = clusterCoordinates;
+    }
+
+    public String getDepartmentNumber() {
+        return departmentNumber;
+    }
+
+    public void setDepartmentNumber(String departmentNumber) {
+        this.departmentNumber = departmentNumber;
     }
 }

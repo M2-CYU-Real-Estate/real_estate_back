@@ -1,6 +1,7 @@
 package com.github.m2cyurealestate.real_estate_back.dao.estate;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
+import com.github.m2cyurealestate.real_estate_back.business.estate.ClusterArgs;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
@@ -8,6 +9,7 @@ import com.github.m2cyurealestate.real_estate_back.business.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,5 +36,8 @@ public interface EstateDao {
 
     Page<Estate> findByProfile(Profile profile, Pageable pageable, User user);
 
-    // TODO find by cluster
+    List<Estate> findByCluster(int cluster, String departmentNumber);
+
+    List<Estate> findByClusters(Collection<ClusterArgs> clusterArgs);
+
 }
