@@ -5,6 +5,7 @@ import com.github.m2cyurealestate.real_estate_back.api.rest.page.RespPage;
 import com.github.m2cyurealestate.real_estate_back.api.rest.utils.Delayer;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.services.estate.EstateService;
+import com.github.m2cyurealestate.real_estate_back.services.suggestion.SuggestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,11 @@ public class EstateController {
 
     private final EstateService estateService;
 
-    @Autowired
-    public EstateController(EstateService estateService) {
+    private final SuggestionsService suggestionsService;
+
+    public EstateController(EstateService estateService, SuggestionsService suggestionsService) {
         this.estateService = estateService;
+        this.suggestionsService = suggestionsService;
     }
 
     @GetMapping("/{id}")
@@ -70,5 +73,14 @@ public class EstateController {
     ) throws Exception {
         var page = estateService.getByProfile(pageParams, request);
         return ResponseEntity.ok(RespPage.of(page, RespEstate::new));
+    }
+
+    @GetMapping("/suggestions")
+    public ResponseEntity<List<RespEstate>> getUserSuggestions() throws Exception {
+        var suggestions = suggestionsService.getSuggestions()
+                .stream()
+                .map(RespEstate::new)
+                .toList();
+        return ResponseEntity.ok(suggestions);
     }
 }
