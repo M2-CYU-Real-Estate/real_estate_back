@@ -43,7 +43,7 @@ class EstatePositionCache {
      */
     public List<EstatePosition> fetchEstatePositions() {
         long lastId = findLastId();
-        if (lastId > lastEstateId) {
+        if (cache.isEmpty() || lastId > lastEstateId) {
             lastEstateId = lastId;
             updateCache();
         }
