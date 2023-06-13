@@ -1,6 +1,7 @@
 package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 
 import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.EstateFiltersParams;
+import com.github.m2cyurealestate.real_estate_back.business.estate.ClusterArgs;
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
@@ -14,10 +15,7 @@ import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateMlCTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateMlCRecord;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record1;
-import org.jooq.Record2;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -285,6 +284,29 @@ public class JooqEstateDao implements EstateDao {
         updateFavorites(estates).accept(user);
 
         return new PageImpl<>(estates, pageable, totalCount);
+    }
+
+    @Override
+    public List<Estate> findByCluster(int cluster, String departmentNumber) {
+        return dsl.selectFrom(ESTATE)
+                .where(ESTATE.CLUSTER.eq(cluster))
+                .and(ESTATE.DEPARTMENT_NUMBER.eq(departmentNumber))
+                // Don't need to know if they are favorite here
+                .fetch(estateMappers::toEstate);
+    }
+
+    @Override
+    public List<Estate> findByClusters(Collection<ClusterArgs> clusterArgs) {
+        List<Row2<Integer, String>> clusterRows = clusterArgs.stream()
+                .map(c -> DSL.row(c.cluster(), c.department()))
+                .toList();
+
+        return dsl.selectFrom(ESTATE)
+                // Need to perform combination checking in order
+                // to avoid fetching wrong estates
+                .where(DSL.row(ESTATE.CLUSTER, ESTATE.DEPARTMENT_NUMBER).in(clusterRows))
+                // Don't need to know if they are favorite here
+                .fetch(estateMappers::toEstate);
     }
 
 }

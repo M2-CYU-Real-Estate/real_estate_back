@@ -5,8 +5,6 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePositio
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateMlCRecord;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
-import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.jooq.Record4;
 
@@ -47,7 +45,46 @@ class JooqEstateMappers {
                 record.getDt(),
                 record.getDt(),
                 record.getCluster(),
-                record.getCoords()
+                record.getCoords(),
+                record.getDepartmentNumber()
+        );
+    }
+
+    /**
+     * Shortcut for {@link #toEstate(JqEstateMlCRecord, boolean)}
+     * with {@code isFavorite} set to {@code false}
+     */
+    public Estate toEstate(JqEstateMlCRecord record) {
+        return new Estate(
+                (long) record.getId(),
+                false,
+                record.getTitle(),
+                record.getDescription(),
+                record.getUrl(),
+                record.getImage(),
+                record.getRef(),
+                JooqEstateType.findEstateType(record.getTypeEstate()),
+                record.getCityName(),
+                record.getPostalCode(),
+                record.getPrice(),
+                record.getSurface().longValue(),
+                record.getTerrainSurface().longValue(),
+                record.getRoomNumber(),
+                record.getBedroomNumber(),
+                record.getBathroomNumber(),
+                record.getIsterrace(),
+                record.getIsbalcony(),
+                record.getIselevator(),
+                record.getIsgarage(),
+                record.getIsparking(),
+                record.getIsspecialkitchen(),
+                RateClass.fromString(record.getEnergyclass()),
+                RateClass.fromString(record.getGazemission()),
+                record.getDt(),
+                record.getDt(),
+                record.getCluster(),
+                record.getCoords(),
+                record.getDepartmentNumber()
         );
     }
 

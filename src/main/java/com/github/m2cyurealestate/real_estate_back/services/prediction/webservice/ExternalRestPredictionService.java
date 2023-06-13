@@ -1,13 +1,10 @@
 package com.github.m2cyurealestate.real_estate_back.services.prediction.webservice;
 
-import com.github.m2cyurealestate.real_estate_back.config.properties.WebserviceProperties;
+import com.github.m2cyurealestate.real_estate_back.services.ml_webservice.MLWebserviceAccessor;
 import com.github.m2cyurealestate.real_estate_back.services.prediction.PredictionInput;
 import com.github.m2cyurealestate.real_estate_back.services.prediction.PredictionService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 
@@ -20,25 +17,21 @@ import java.math.BigDecimal;
 @Service
 public class ExternalRestPredictionService implements PredictionService {
 
-    private final WebClient webclient;
+    private final MLWebserviceAccessor webservice;
 
     @Autowired
-    public ExternalRestPredictionService(WebserviceProperties webserviceProperties) {
-        webclient = WebClient.builder()
-                .baseUrl(webserviceProperties.url())
-                .build();
+    public ExternalRestPredictionService(MLWebserviceAccessor webservice) {
+        this.webservice = webservice;
     }
 
     @Override
     public BigDecimal predictSellingPrice(PredictionInput input) {
-        WsPredictionResp resp = webclient.post()
-                .uri("/predict-price")
-                .bodyValue(new WsPredictionReq(input))
-                .retrieve()
-                .bodyToMono(WsPredictionResp.class)
-                .blockOptional()
-                .orElseThrow(() -> new RuntimeException("Incorrect response from webservice was given"));
+        WsPredictionReq wsPredictionReq = new WsPredictionReq(input);
 
+        WsPredictionResp resp = webservice.postRequest(webservice.getPredictionUrl(),
+                                                       wsPredictionReq,
+                                                       WsPredictionResp.class
+        );
         return BigDecimal.valueOf(resp.predicted_value());
     }
 
