@@ -42,7 +42,7 @@ public class FavoritesController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<Void> removeFavorite(@PathParam("url") String estateUrl) throws Exception {
+    public ResponseEntity<Void> removeFavorite(@RequestParam("url") String estateUrl) throws Exception {
         userService.removeFavorite(new ReqAddFavorite(estateUrl));
         return ResponseEntity.ok().build();
     }
