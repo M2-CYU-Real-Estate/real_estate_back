@@ -1,5 +1,6 @@
 package com.github.m2cyurealestate.real_estate_back.dao.user;
 
+import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 
@@ -26,6 +27,8 @@ public interface UserDao {
     void removeFavorite(User user, String estateUrl);
 
     void addNavigation(User user, String estateUrl);
+
+    Optional<Profile> findMainProfile(User user);
 
     List<Profile> findProfileByUser(User user);
 

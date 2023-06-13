@@ -4,6 +4,7 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateMlCRecord;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
@@ -17,7 +18,7 @@ import java.math.RoundingMode;
  */
 class JooqEstateMappers {
 
-    public Estate toEstate(JqEstateRecord record, boolean isFavorite) {
+    public Estate toEstate(JqEstateMlCRecord record, boolean isFavorite) {
         return new Estate(
                 (long) record.getId(),
                 isFavorite,
@@ -44,7 +45,9 @@ class JooqEstateMappers {
                 RateClass.fromString(record.getEnergyclass()),
                 RateClass.fromString(record.getGazemission()),
                 record.getDt(),
-                record.getDt()
+                record.getDt(),
+                record.getCluster(),
+                record.getCoords()
         );
     }
 

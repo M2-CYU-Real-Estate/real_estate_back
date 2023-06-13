@@ -34,6 +34,7 @@ public class CryptographyConfig {
 
     @Bean
     public KeyStore keyStore() {
+        LOGGER.info("Init keystore");
         try {
             File keyStoreFile = new File(jwtProperties.key().path());
             char[] password = jwtProperties.key().password().toCharArray();

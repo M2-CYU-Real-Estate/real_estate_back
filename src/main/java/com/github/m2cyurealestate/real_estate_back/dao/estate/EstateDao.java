@@ -24,6 +24,8 @@ public interface EstateDao {
 
     List<EstatePosition> findAllEstatePositions();
 
+    Page<Estate> findNavigationEntries(Pageable pageable, User user);
+
     Page<Estate> findFavorites(Pageable pageable, User user);
 
     CityPriceStats getCityPriceStats(Estate estate);
@@ -31,4 +33,6 @@ public interface EstateDao {
     EstateStatistics getEstateStatistics(long id);
 
     Page<Estate> findByProfile(Profile profile, Pageable pageable, User user);
+
+    // TODO find by cluster
 }
