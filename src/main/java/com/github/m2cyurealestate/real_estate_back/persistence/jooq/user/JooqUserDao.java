@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -153,6 +154,13 @@ public class JooqUserDao implements UserDao {
         if (insertResult != 1) {
             throw new RuntimeException("Cannot insert the favorite : result code is 0");
         }
+    }
+
+    @Override
+    public List<Profile> findProfileByUser(User user) {
+        return dsl.selectFrom(PROFILE)
+                .where(PROFILE.ID_USER.eq(user.getId().intValue()))
+                .fetch(profileMappers::toProfile);
     }
 
     @Override

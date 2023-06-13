@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Aldric Vitali Silvestre
  */
@@ -92,6 +94,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Profile> getUserProfiles() {
+        User user = authenticationHandler.getUserFromContext();
+        return userDao.findProfileByUser(user);
+    }
+
+    @Override
     public Profile getProfileById(long id) {
         User user = authenticationHandler.getUserFromContext();
         return userDao.findProfileById(user, id).orElseThrow();
@@ -136,11 +144,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteProfile(long profileId) {
         User user = authenticationHandler.getUserFromContext();
+        userDao.removeProfile(user, profileId);
     }
 
     @Override
     public void setToMainProfile(long profileId) {
         User user = authenticationHandler.getUserFromContext();
+        userDao.switchMainProfile(user, profileId);
     }
 
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Aldric Vitali Silvestre
  */
@@ -35,6 +37,15 @@ public class UserController {
     public ResponseEntity<RespUser> getUserById(@PathVariable("id") long id) throws Exception {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(new RespUser(user));
+    }
+
+    @GetMapping("profiles")
+    public ResponseEntity<List<RespProfile>> getUserProfiles() throws Exception {
+        var profiles = userService.getUserProfiles()
+                .stream()
+                .map(RespProfile::new)
+                .toList();
+        return ResponseEntity.ok(profiles);
     }
 
     @PutMapping("profiles/{id}")

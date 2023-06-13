@@ -7,6 +7,7 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.business.user.User;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -37,6 +38,9 @@ public interface UserService {
     void removeFavorite(ReqAddFavorite request);
 
     // ==== PROFILES ====
+
+    List<Profile> getUserProfiles();
+
     void createProfile(ReqCreateProfile request);
 
     void modifyProfile(long profileId, ReqCreateProfile request);
