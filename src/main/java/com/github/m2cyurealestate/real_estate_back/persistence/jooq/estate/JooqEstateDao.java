@@ -11,9 +11,9 @@ import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateStatistics;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesScoreTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateMlCTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateRecord;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateMlCRecord;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
@@ -38,7 +38,9 @@ import java.util.function.Function;
 @Repository
 public class JooqEstateDao implements EstateDao {
 
-    public static final JqEstateTable ESTATE = JqEstateTable.ESTATE;
+    public static final JqEstateMlCTable ESTATE = JqEstateMlCTable.ESTATE_ML_C;
+
+    public static final Class<JqEstateMlCRecord> ESTATE_RECORD_CLASS = JqEstateMlCRecord.class;
 
     public static final JqUserLikesTable USER_LIKES = JqUserLikesTable.USER_LIKES;
 
@@ -78,7 +80,7 @@ public class JooqEstateDao implements EstateDao {
         return findById(id, Optional.empty());
     }
 
-    private Function<JqEstateRecord, Estate> fetchWithFavorite(Optional<User> user) {
+    private Function<JqEstateMlCRecord, Estate> fetchWithFavorite(Optional<User> user) {
         return r -> user
                 // If we have the user connected, we want to fetch if he has a favorite
                 .map(u -> {
@@ -137,6 +139,11 @@ public class JooqEstateDao implements EstateDao {
     }
 
     @Override
+    public Page<Estate> findNavigationEntries(Pageable pageable, User user) {
+        return null;
+    }
+
+    @Override
     public Page<Estate> findFavorites(Pageable pageable, User user) {
         var select = dsl.select(ESTATE.asterisk())
                 .from(ESTATE)
@@ -150,7 +157,7 @@ public class JooqEstateDao implements EstateDao {
         // Then, fetch the list of elements
         List<Estate> estates = select.offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch(r -> estateMappers.toEstate(r.into(JqEstateRecord.class), true));
+                .fetch(r -> estateMappers.toEstate(r.into(ESTATE_RECORD_CLASS), true));
 
         return new PageImpl<>(estates, pageable, totalCount);
     }
@@ -270,7 +277,7 @@ public class JooqEstateDao implements EstateDao {
         List<Estate> estates = select.offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch(r -> {
-                    var rec = r.into(JqEstateRecord.class);
+                    var rec = r.into(ESTATE_RECORD_CLASS);
                     return estateMappers.toEstate(rec, false);
                 });
 

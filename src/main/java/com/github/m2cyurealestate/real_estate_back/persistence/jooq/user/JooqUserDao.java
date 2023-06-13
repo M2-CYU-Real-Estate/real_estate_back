@@ -7,7 +7,6 @@ import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserEntityTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserNavigationTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqBuyingProfileEntryRecord;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqUserEntityRecord;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqUserLikesRecord;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqUserNavigationRecord;
@@ -154,6 +153,14 @@ public class JooqUserDao implements UserDao {
         if (insertResult != 1) {
             throw new RuntimeException("Cannot insert the favorite : result code is 0");
         }
+    }
+
+    @Override
+    public Optional<Profile> findMainProfile(User user) {
+        return dsl.selectFrom(PROFILE)
+                .where(PROFILE.ID_USER.eq(user.getId().intValue()))
+                .and(PROFILE.IS_MAINPROFILE.isTrue())
+                .fetchOptional(profileMappers::toProfile);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.github.m2cyurealestate.real_estate_back.persistence.jooq.estate;
 
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstatePosition;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateMlCTable;
 import org.jooq.DSLContext;
 import org.jooq.Record4;
 
@@ -20,7 +20,7 @@ class EstatePositionCache {
 
     public static final int MAX_POSITION_ROWS = 15_000;
 
-    public static final JqEstateTable ESTATE = JqEstateTable.ESTATE;
+    public static final JqEstateMlCTable ESTATE = JqEstateMlCTable.ESTATE_ML_C;
 
     public static final JqCitiesTable CITY = JqCitiesTable.CITIES;
 

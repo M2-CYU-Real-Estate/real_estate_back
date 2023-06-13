@@ -4,12 +4,11 @@ import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.Estate
 import com.github.m2cyurealestate.real_estate_back.business.estate.EstateType;
 import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.ConditionBuilder;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateMlCTable;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ import java.util.List;
  */
 class JooqEstateFilters {
 
-    public static final JqEstateTable ESTATE = JqEstateTable.ESTATE;
+    public static final JqEstateMlCTable ESTATE = JqEstateMlCTable.ESTATE_ML_C;
 
     /**
      * Create the condition based on the filters provided.
@@ -41,6 +40,8 @@ class JooqEstateFilters {
                 .add(EstateFiltersParams::getGarage, this::createGarageCondition)
                 .add(EstateFiltersParams::getfKitchen, this::createFittedKitchenCondition)
                 .add(EstateFiltersParams::getElevator, this::createElevatorCondition)
+                .add(EstateFiltersParams::getGzClass, this::createGazEmissionClassCondition)
+                .add(EstateFiltersParams::getEnClass, this::createEnergyClassCondition)
                 .build();
     }
 
@@ -130,100 +131,6 @@ class JooqEstateFilters {
         return DSL.trueCondition();
     }
 
-    // Old filter consumers
-//    private Consumer<EstateType> addTypeFilter(SelectQuery<JqEstateRecord> query) {
-//        return t -> {
-//            JooqEstateType.findFilterName(t)
-//                    .ifPresent(f -> query.addConditions(ESTATE.TYPE_ESTATE.eq(f)));
-//        };
-//    }
-
-//    private Consumer<String> addCityFilter(SelectQuery<JqEstateRecord> query) {
-//        return cityName -> query.addConditions(ESTATE.CITY_NAME.eq(cityName));
-//    }
-
-//    private Consumer<Long> addMinPriceFilter(SelectQuery<JqEstateRecord> query) {
-//        return minPr -> query.addConditions(ESTATE.PRICE.ge(minPr));
-//    }
-
-//    private Consumer<Long> addMaxPriceFilter(SelectQuery<JqEstateRecord> query) {
-//        return maxPr -> query.addConditions(ESTATE.PRICE.le(maxPr));
-//    }
-
-//    private Consumer<Long> addMinHouseAreaFilter(SelectQuery<JqEstateRecord> query) {
-//        return minArea -> query.addConditions(ESTATE.SURFACE.cast(SQLDataType.BIGINT).ge(minArea));
-//    }
-//
-//    private Consumer<Long> addMaxHouseAreaFilter(SelectQuery<JqEstateRecord> query) {
-//        return maxArea -> query.addConditions(ESTATE.SURFACE.cast(SQLDataType.BIGINT).ge(maxArea));
-//    }
-//
-//    private Consumer<Boolean> addTerraceFilter(SelectQuery<JqEstateRecord> query) {
-//        return wanted -> {
-//            if (wanted) {
-//                query.addConditions(ESTATE.ISTERRACE.eq(true));
-//            }
-//        };
-//    }
-//
-//    private Consumer<Boolean> addBalconyFilter(SelectQuery<JqEstateRecord> query) {
-//        return wanted -> {
-//            if (wanted) {
-//                query.addConditions(ESTATE.ISBALCONY.eq(true));
-//            }
-//        };
-//    }
-//
-//    private Consumer<Boolean> addParkingFilter(SelectQuery<JqEstateRecord> query) {
-//        return wanted -> {
-//            if (wanted) {
-//                query.addConditions(ESTATE.ISPARKING.eq(true));
-//            }
-//        };
-//    }
-//
-//    private Consumer<Boolean> addGarageFilter(SelectQuery<JqEstateRecord> query) {
-//        return wanted -> {
-//            if (wanted) {
-//                query.addConditions(ESTATE.ISGARAGE.eq(true));
-//            }
-//        };
-//    }
-//
-//    private Consumer<Boolean> addFittedKitchenFilter(SelectQuery<JqEstateRecord> query) {
-//        return wanted -> {
-//            if (wanted) {
-//                query.addConditions(ESTATE.ISSPECIALKITCHEN.eq(true));
-//            }
-//        };
-//    }
-//
-//    private Consumer<Boolean> addElevatorFilter(SelectQuery<JqEstateRecord> query) {
-//        return wanted -> {
-//            if (wanted) {
-//                query.addConditions(ESTATE.ISELEVATOR.eq(true));
-//            }
-//        };
-//    }
-//
-//    private Consumer<RateClass> addEnergyClassFilter(SelectQuery<JqEstateRecord> query) {
-//        return rateClass -> {
-//            if (rateClass.isSpecified()) {
-//                List<String> acceptableRates = createAcceptableRates(rateClass);
-//                query.addConditions(ESTATE.ENERGYCLASS.in(acceptableRates));
-//            }
-//        };
-//    }
-//
-//    private Consumer<RateClass> addGazEmissionFilter(SelectQuery<JqEstateRecord> query) {
-//        return rateClass -> {
-//            if (rateClass.isSpecified()) {
-//                List<String> acceptableRates = createAcceptableRates(rateClass);
-//                query.addConditions(ESTATE.GAZEMISSION.in(acceptableRates));
-//            }
-//        };
-//    }
-
     /**
      * In order to provide a valid filter, create a list of wanted strings
      * in order to transform a condition of type
@@ -233,8 +140,7 @@ class JooqEstateFilters {
      */
     private List<String> createAcceptableRates(RateClass rateClass) {
         // Find all rates that are higher or equal
-        return Arrays.stream(RateClass.values())
-                .filter(r -> r.getRating() >= rateClass.getRating())
+        return rateClass.getGreaterClasses()
                 .map(RateClass::name)
                 .toList();
     }

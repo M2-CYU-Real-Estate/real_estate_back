@@ -5,7 +5,7 @@ import com.github.m2cyurealestate.real_estate_back.business.estate.RateClass;
 import com.github.m2cyurealestate.real_estate_back.business.user.Profile;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesScoreTable;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateTable;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateMlCTable;
 import org.apache.commons.lang3.Range;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -28,7 +28,7 @@ public class JooqEstateProfileFilters {
     public static final int BEDROOMS_VARIATION = 1;
     public static final int BATHROOMS_VARIATION = 1;
 
-    public static final JqEstateTable ESTATE = JqEstateTable.ESTATE;
+    public static final JqEstateMlCTable ESTATE = JqEstateMlCTable.ESTATE_ML_C;
 
     public static final JqCitiesTable CITY = JqCitiesTable.CITIES;
 

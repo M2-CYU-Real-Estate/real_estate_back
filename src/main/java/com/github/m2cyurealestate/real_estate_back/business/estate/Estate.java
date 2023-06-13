@@ -66,10 +66,14 @@ public class Estate {
 
     private LocalDateTime lastUpdatedAt;
 
+    private Integer cluster;
+
+    private String clusterCoordinates;
+
     public Estate() {
     }
 
-    public Estate(long id,
+    public Estate(Long id,
                   boolean isFavorite,
                   String title,
                   String description,
@@ -94,7 +98,9 @@ public class Estate {
                   RateClass energyClass,
                   RateClass gazEmissionClass,
                   LocalDateTime createdAt,
-                  LocalDateTime lastUpdatedAt) {
+                  LocalDateTime lastUpdatedAt,
+                  Integer cluster,
+                  String clusterCoordinates) {
         this.id = id;
         this.isFavorite = isFavorite;
         this.title = title;
@@ -121,6 +127,8 @@ public class Estate {
         this.gazEmissionClass = gazEmissionClass;
         this.createdAt = createdAt;
         this.lastUpdatedAt = lastUpdatedAt;
+        this.cluster = cluster;
+        this.clusterCoordinates = clusterCoordinates;
     }
 
     public Long getId() {
@@ -329,5 +337,21 @@ public class Estate {
 
     public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    public Integer getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(Integer cluster) {
+        this.cluster = cluster;
+    }
+
+    public String getClusterCoordinates() {
+        return clusterCoordinates;
+    }
+
+    public void setClusterCoordinates(String clusterCoordinates) {
+        this.clusterCoordinates = clusterCoordinates;
     }
 }
