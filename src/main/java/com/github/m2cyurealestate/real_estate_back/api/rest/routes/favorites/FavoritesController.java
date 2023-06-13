@@ -6,6 +6,7 @@ import com.github.m2cyurealestate.real_estate_back.api.rest.routes.estate.RespEs
 import com.github.m2cyurealestate.real_estate_back.business.estate.Estate;
 import com.github.m2cyurealestate.real_estate_back.services.estate.EstateService;
 import com.github.m2cyurealestate.real_estate_back.services.user.UserService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +41,8 @@ public class FavoritesController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{url}")
-    public ResponseEntity<Void> removeFavorite(@PathVariable("url") String estateUrl) throws Exception {
+    @DeleteMapping()
+    public ResponseEntity<Void> removeFavorite(@PathParam("url") String estateUrl) throws Exception {
         userService.removeFavorite(new ReqAddFavorite(estateUrl));
         return ResponseEntity.ok().build();
     }
