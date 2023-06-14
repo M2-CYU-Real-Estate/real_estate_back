@@ -46,7 +46,7 @@ public class JooqProfileMappers {
 
     public JqBuyingProfileEntryRecord fromProfile(Profile profile) {
         var record = dsl.newRecord(JqBuyingProfileEntryTable.BUYING_PROFILE_ENTRY);
-        record.setIdEntry(Optional.ofNullable(profile.getId()).map(Long::intValue).orElse(null));
+//        record.setIdEntry(Optional.ofNullable(profile.getId()).map(Long::intValue).orElse(null));
         record.setIdUser((int) profile.getUserId());
         record.setIsMainprofile(profile.isMainProfile());
         record.setProfileName(profile.getName());
