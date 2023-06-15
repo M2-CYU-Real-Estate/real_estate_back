@@ -10,10 +10,7 @@ import com.github.m2cyurealestate.real_estate_back.dao.city.CityDao;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.CityPriceStats;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateDao;
 import com.github.m2cyurealestate.real_estate_back.dao.estate.EstateStatistics;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesScoreTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqCitiesTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqEstateMlCTable;
-import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.JqUserLikesTable;
+import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.*;
 import com.github.m2cyurealestate.real_estate_back.persistence.jooq.model.tables.records.JqEstateMlCRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -42,6 +39,8 @@ public class JooqEstateDao implements EstateDao {
     public static final Class<JqEstateMlCRecord> ESTATE_RECORD_CLASS = JqEstateMlCRecord.class;
 
     public static final JqUserLikesTable USER_LIKES = JqUserLikesTable.USER_LIKES;
+
+    public static final JqUserNavigationTable USER_NAVIGATION = JqUserNavigationTable.USER_NAVIGATION;
 
     public static final JqCitiesTable CITY = JqCitiesTable.CITIES;
 
@@ -139,7 +138,21 @@ public class JooqEstateDao implements EstateDao {
 
     @Override
     public Page<Estate> findNavigationEntries(Pageable pageable, User user) {
-        return null;
+        var select = dsl.select(ESTATE.asterisk())
+                .from(ESTATE)
+                .innerJoin(USER_NAVIGATION)
+                .on(ESTATE.URL.eq(USER_NAVIGATION.ESTATE_LINK))
+                .and(USER_NAVIGATION.ID_USER.eq(user.getId().intValue()));
+
+        // Perform another request to get total count
+        int totalCount = dsl.fetchCount(select);
+
+        // Then, fetch the list of elements
+        List<Estate> estates = select.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch(r -> estateMappers.toEstate(r.into(ESTATE_RECORD_CLASS), true));
+
+        return new PageImpl<>(estates, pageable, totalCount);
     }
 
     @Override
