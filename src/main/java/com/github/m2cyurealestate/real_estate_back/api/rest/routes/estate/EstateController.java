@@ -69,7 +69,7 @@ public class EstateController {
     @GetMapping("/search-profile")
     public ResponseEntity<RespPage<RespEstate>> searchByProfile(
             PageParams pageParams,
-            @RequestBody ReqSearchByProfile request
+            ReqSearchByProfile request
     ) throws Exception {
         var page = estateService.getByProfile(pageParams, request);
         return ResponseEntity.ok(RespPage.of(page, RespEstate::new));
