@@ -58,8 +58,6 @@ public class JooqCityDao implements CityDao {
         return dsl.select(CITY.asterisk(), CITY_SCORE.asterisk())
                 .from(CITY)
                 .innerJoin(CITY_SCORE)
-                .on(CITY_SCORE.CITY_NAME.eq(CITY.CITY_NAME),
-                    CITY_SCORE.POSTAL_CODE.eq(CITY.POSTAL_CODE)
-                );
+                .on(CITY_SCORE.POSTAL_CODE.eq(CITY.POSTAL_CODE));
     }
 }

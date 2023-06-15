@@ -78,10 +78,11 @@ public class SuggestionsServiceImpl implements SuggestionsService {
     }
 
     private List<Estate> findInputEstatesFromProfile(User user) {
-        Pageable pageable = PageRequest.of(0, 50);
-        return userDao.findMainProfile(user)
-                .map(p -> estateDao.findByProfile(p, pageable, user).getContent())
-                .orElseGet(List::of);
+        return List.of();
+//        Pageable pageable = PageRequest.of(0, 50);
+//        return userDao.findMainProfile(user)
+//                .map(p -> estateDao.findByProfile(p, pageable, user).getContent())
+//                .orElseGet(List::of);
     }
 
     private List<Estate> findClusterEstates(List<Estate> inputEstates) {
