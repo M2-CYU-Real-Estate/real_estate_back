@@ -279,8 +279,7 @@ public class JooqEstateDao implements EstateDao {
                 .on(CITY.POSTAL_CODE.eq(ESTATE.POSTAL_CODE))
                 .innerJoin(CITY_SCORE)
                 .on(CITY_SCORE.POSTAL_CODE.eq(CITY.POSTAL_CODE))
-                .where(conditions)
-                .orderBy(ESTATE.DT.desc(), ESTATE.ID.desc());
+                .where(conditions);
 
         // Perform another request to get total count
         int totalCount = dsl.fetchCount(select);

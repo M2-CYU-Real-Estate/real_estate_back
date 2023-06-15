@@ -116,7 +116,7 @@ public class JooqEstateProfileFilters {
          *          * SIN(RADIANS(b.Latitude))))) AS distance_in_km
          */
 
-        double KILOMETERS_PER_DEGREE = 111.111;
+        double KILOMETERS_PER_DEGREE = 11.111;
 
         BigDecimal latitude = city.latitude();
         BigDecimal longitude = city.longitude();
