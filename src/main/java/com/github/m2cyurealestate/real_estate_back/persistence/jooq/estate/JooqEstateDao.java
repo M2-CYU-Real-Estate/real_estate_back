@@ -58,6 +58,7 @@ public class JooqEstateDao implements EstateDao {
 
     private final EstatePositionCache positionCache;
 
+
     @Autowired
     public JooqEstateDao(DSLContext dsl, CityDao cityDao) {
         this.dsl = dsl;
@@ -142,7 +143,8 @@ public class JooqEstateDao implements EstateDao {
                 .from(ESTATE)
                 .innerJoin(USER_NAVIGATION)
                 .on(ESTATE.URL.eq(USER_NAVIGATION.ESTATE_LINK))
-                .and(USER_NAVIGATION.ID_USER.eq(user.getId().intValue()));
+                .and(USER_NAVIGATION.ID_USER.eq(user.getId().intValue()))
+                .orderBy(USER_NAVIGATION.DT.desc());
 
         // Perform another request to get total count
         int totalCount = dsl.fetchCount(select);

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,6 +116,7 @@ public class SuggestionsServiceImpl implements SuggestionsService {
                 ReqProperty.fromEstates(clusterEstates),
                 NB_WANTED_SUGGESTIONS
         );
+
         return webservice.postRequest(webservice.getSuggestionsUrl(), req, RespGetSuggestions.class);
     }
 
@@ -127,11 +129,11 @@ public class SuggestionsServiceImpl implements SuggestionsService {
             String coords
     ) {
         ReqProperty(Estate estate) {
-            this(estate.getUrl(), // The ref is the url in order to make them REALLY unique
+            this(Objects.requireNonNull(estate.getUrl()), // The ref is the url in order to make them REALLY unique
                  Integer.parseInt(estate.getDepartmentNumber()),
-                 estate.getDescription(),
-                 estate.getCluster(),
-                 estate.getClusterCoordinates()
+                 Objects.requireNonNull(estate.getDescription()),
+                 Objects.requireNonNull(estate.getCluster()),
+                 Objects.requireNonNull(estate.getClusterCoordinates())
             );
         }
 
