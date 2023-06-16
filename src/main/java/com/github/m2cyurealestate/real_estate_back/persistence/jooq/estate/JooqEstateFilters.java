@@ -54,7 +54,7 @@ class JooqEstateFilters {
     }
 
     private Condition createCityCondition(String city) {
-        return ESTATE.CITY_NAME.eq(city);
+        return ESTATE.POSTAL_CODE.eq(city);
     }
 
     private Condition createMinPriceCondition(Long minPrice) {
