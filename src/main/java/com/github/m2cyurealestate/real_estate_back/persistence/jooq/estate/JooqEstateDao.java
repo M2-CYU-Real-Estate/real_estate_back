@@ -84,8 +84,7 @@ public class JooqEstateDao implements EstateDao {
                 // If we have the user connected, we want to fetch if he has a favorite
                 .map(u -> {
                     boolean isFavorite = dsl.fetchExists(dsl.selectFrom(USER_LIKES)
-                                                                 .where(USER_LIKES.ID_USER.cast(Long.class)
-                                                                                .eq(u.getId()))
+                                                                 .where(USER_LIKES.ID_USER.eq(u.getId().intValue()))
                                                                  .and(USER_LIKES.ESTATE_LINK.eq(r.getUrl())));
                     return estateMappers.toEstate(r, isFavorite);
                 })
@@ -122,6 +121,7 @@ public class JooqEstateDao implements EstateDao {
                                                       .otherwise(false), USER_LIKES.ESTATE_LINK)
                     .from(USER_LIKES)
                     .where(USER_LIKES.ESTATE_LINK.in(ids))
+                    .and(USER_LIKES.ID_USER.cast(Long.class).eq(u.getId()))
                     .fetchMap(USER_LIKES.ESTATE_LINK);
 
             // Update the "favorite" field
