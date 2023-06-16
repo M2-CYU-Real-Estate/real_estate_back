@@ -29,6 +29,8 @@ class JooqEstateFilters {
     public Condition createFilters(EstateFiltersParams filtersParams) {
         return new ConditionBuilder<>(filtersParams)
                 .add(EstateFiltersParams::getType, this::createTypeCondition)
+                .add(EstateFiltersParams::getRooms, this::createNbRoomsCondition)
+                .add(EstateFiltersParams::getBathrooms, this::createNbBathroomsCondition)
                 .add(EstateFiltersParams::getCity, this::createCityCondition)
                 .add(EstateFiltersParams::getMinPr, this::createMinPriceCondition)
                 .add(EstateFiltersParams::getMaxPr, this::createMaxPriceCondition)
@@ -45,12 +47,20 @@ class JooqEstateFilters {
                 .build();
     }
 
-    // ==== Filter functions ====
 
+    // ==== Filter functions ====
     private Condition createTypeCondition(EstateType type) {
         return JooqEstateType.findFilterName(type)
                 .map(ESTATE.TYPE_ESTATE::eq)
                 .orElse(DSL.trueCondition());
+    }
+
+    private Condition createNbRoomsCondition(Long nbRooms) {
+        return ESTATE.ROOM_NUMBER.eq(Math.toIntExact(nbRooms));
+    }
+
+    private Condition createNbBathroomsCondition(Long nbBathrooms) {
+        return ESTATE.BATHROOM_NUMBER.eq(Math.toIntExact(nbBathrooms));
     }
 
     private Condition createCityCondition(String city) {

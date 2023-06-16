@@ -14,6 +14,8 @@ public interface CityDao {
 
     Optional<City> findByPostalCode(String postalCode);
 
+    Optional<City> findByPostalCode(String postalCode, Optional<String> cityname);
+
     Optional<City> findByInseeCode(String inseeCode);
 
 }

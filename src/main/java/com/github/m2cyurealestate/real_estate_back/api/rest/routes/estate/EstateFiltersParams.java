@@ -36,6 +36,10 @@ public class EstateFiltersParams {
      */
     private Optional<Long> maxHArea = Optional.empty();
 
+    private Optional<Long> rooms = Optional.empty();
+
+    private Optional<Long> bathrooms = Optional.empty();
+
     /**
      * Is terrace presence mandatory ?
      */
@@ -187,5 +191,21 @@ public class EstateFiltersParams {
 
     public void setGzClass(Optional<RateClass> gzClass) {
         this.gzClass = gzClass;
+    }
+
+    public Optional<Long> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Optional<Long> rooms) {
+        this.rooms = rooms;
+    }
+
+    public Optional<Long> getBathrooms() {
+        return bathrooms;
+    }
+
+    public void setBathrooms(Optional<Long> bathrooms) {
+        this.bathrooms = bathrooms;
     }
 }

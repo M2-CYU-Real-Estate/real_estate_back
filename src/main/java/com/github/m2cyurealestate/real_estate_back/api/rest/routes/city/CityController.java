@@ -36,4 +36,11 @@ public class CityController {
         var city = cityService.getCityByInseeCode(inseeCode);
         return ResponseEntity.ok(new RespCity(city));
     }
+
+    @GetMapping("/postal/{postalCode}")
+    public ResponseEntity<RespCity> getCityByPostalCode(@PathVariable("postalCode") String postalCode) throws Exception {
+        var city = cityService.getCityByPostalCode(postalCode);
+        return ResponseEntity.ok(new RespCity(city));
+    }
+
 }
