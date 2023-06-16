@@ -102,7 +102,7 @@ public class EstateServiceImpl implements EstateService {
         // Predict price
         var input = PredictionInput.fromModels(estate, city);
         var estimatedPrice = predictionService.predictSellingPrice(input);
-        estimatedPrice = refineEstimatedPrice(estimatedPrice, estate);
+//        estimatedPrice = refineEstimatedPrice(estimatedPrice, estate);
 
         var cityStats = estateDao.getCityPriceStats(estate);
 
