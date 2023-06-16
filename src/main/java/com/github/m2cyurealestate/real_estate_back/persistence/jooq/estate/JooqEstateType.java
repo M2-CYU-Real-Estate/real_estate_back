@@ -12,8 +12,8 @@ import java.util.Optional;
  * @author Aldric Vitali Silvestre
  */
 enum JooqEstateType {
-    HOUSE("Maison", EstateType.HOUSE),
-    APARTMENT("Appartement", EstateType.APARTMENT);
+    HOUSE("maison", EstateType.HOUSE),
+    APARTMENT("appartement", EstateType.APARTMENT);
 
     private final String name;
     private final EstateType estateType;
