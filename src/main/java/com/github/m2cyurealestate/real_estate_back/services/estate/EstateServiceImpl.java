@@ -137,9 +137,8 @@ public class EstateServiceImpl implements EstateService {
     }
 
     private Map<Month, BigDecimal> computePricePerMonth(BigDecimal price) {
-        // TODO computePricePerMonth : for now, we don't have the variations yet
         return Arrays.stream(Month.values())
-                .collect(Collectors.toMap(Function.identity(), m -> price));
+                .collect(Collectors.toMap(Function.identity(), m -> m.applyVariation(price)));
     }
 
     @Override
