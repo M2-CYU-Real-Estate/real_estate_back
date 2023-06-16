@@ -51,7 +51,8 @@ class JooqEstateFilters {
     // ==== Filter functions ====
     private Condition createTypeCondition(EstateType type) {
         return JooqEstateType.findFilterName(type)
-                .map(ESTATE.TYPE_ESTATE::eq)
+                .map(t -> ESTATE.TYPE_ESTATE.eq(JooqEstateType.findFilterName(type)
+                                                        .orElse(JooqEstateType.HOUSE.getName())))
                 .orElse(DSL.trueCondition());
     }
 
